@@ -1,0 +1,12 @@
+# Emacs
+*~
+\#*\#
+
+# Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# OSX
+.DS_Store
+.Trashes
+.Spotlight-V100
