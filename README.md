@@ -6,9 +6,10 @@ would not convert these plain texts to fancy html pages, no feeds no
 comments form and no promise to update.
 
 You can follow me on
-[Twitter](https://twitter.com/ztennix)
-[Weibo](http://weibo.com/ztennix)
-[Zhihu](http://www.zhihu.com/people/ztennix)
++ [Twitter](https://twitter.com/ztennix)
++ [Weibo](http://weibo.com/ztennix)
++ [Zhihu](http://www.zhihu.com/people/ztennix)
 
 ©Copyright 2015 by Tennix
+
 Content licensed under the Creative Commons attribution-noderivs License.
