@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Why Rust? -- Beijing Rustacean Meetup</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Why Rust?
+
+by [Tennix](https://github.com/tennix)
+
+2016.05.15
+
+---
+
+# Language matters
+
+C, Matlab, Fortran, Python, Go, Java, JavaScript, Lisp, Scheme, Erlang, Haskell, OCaml
+
+Recent languages: Scala, D, Rust, Go, Swift, Kotlin, Nim, Julia, Elixir, Elm, Crystal, Pony...
+
+Turing complete is never the reason we choose a language.
+
+Language has its appropriate fields, we have our favorite language.
+
+---
+
+# History introduction
+
+* Notable moment
+  1. Personal project by Graydon Hoare(before 2009)
+  2. Sponsored by Mozilla Research(2009)
+  3. Public announced(2010)
+  4. Self-hosting(2010-2011)
+  5. First numbered pre-alpha(2012)
+  6. First stable release(2015.5.15)
+
+* web-archive timeline
+  * [2011-09-04](http://web.archive.org/web/20110623085709/https://github.com/graydon/rust)
+  * [2011-12-26](http://web.archive.org/web/20111226082307/http://www.rust-lang.org/)
+  * [2012-12-29](http://web.archive.org/web/20121229125819/http://www.rust-lang.org/)
+  * [2013-12-25](http://web.archive.org/web/20131225064754/http://www.rust-lang.org/)
+  * [2014-07-02](http://web.archive.org/web/20140702202333/http://www.rust-lang.org/)
+  * [2014-12-31](http://web.archive.org/web/20141231152832/http://www.rust-lang.org/)
+
+* development
+  * well-designed: 5 years designing before stable
+  * Fast moving forward: stable, beta, nightly(every six weeks)
+
+---
+
+# Language Features
+
+* **zero-cost abstraction**
+* **move semantics**
+* **guaranteed memory safety**
+* **threads without data races**
+* **trait-based generics**
+* pattern matching
+* type inference
+* minimal runtime
+* efficient C bindings
+
+
+* algebraic data type
+* macro-based meta-programming
+
+---
+
+# Toolchains
+
+* [crates.io](https://crates.io): central repository
+
+* Cargo: library version manager
+
+* [Rustup](https://www.rustup.rs): rustc/cargo version manager
+
+---
+
+# Applications
+
+* Operating system: [Redox](http://www.redox-os.org)
+* Bare-metal
+* Database: [TiKV](https://github.com/pingcap/tikv)
+* System tools: [coreutils](https://github.com/uutils/coreutils)
+* Web apps: [Hyper](https://github.com/hyperium/hyper), [Iron](http://ironframework.io), [Nickel](http://nickel.rs), [Sapper](https://github.com/sappworks/sapper)
+* Mobile apps: [android-rs-glue](https://github.com/tomaka/android-rs-glue)
+* Games: [Piston](http://www.piston.rs)
+* Scientific computing
+* Machine learning: [Leaf](https://github.com/autumnai/leaf)
+
+---
+
+# Community
+
+Open and kind community
+
+* irc: irc.mozilla.org [#rust](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust) [#rust-beginners](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust-beginners)
+* Forum
+  + https://internal.rust-lang.org
+  + https://users.rust-lang.org
+* GitHub
+  + https://github.com/rust-lang
+  + https://github.com/rust-lang-nursery
+* Reddit: https://reddit.com/r/rust
+  
+* Chinese community
+  + https://github.com/rustcc
+  + https://github.com/RustChina
+  + https://rust-china.org
+  + https://chat.rust-china.org
+  + QQ: 144605258 & 303838735
+
+
+---
+
+# Memory Safety: Ownership
+
+> "You have to think about it, you don't have to worry about it."
+
+---
+
+## Stack & Heap & Scope
+
+```
+                ---------------  high
+main            |             |   |
+                ---------------   |
+                |             |   V
+stack           ---------------
+                |             |
+                ---------------
+                |             |
+heap            |    ...      |
+                |             |
+                ---------------
+                |             |
+                ---------------
+literal         |             |
+                ---------------
+static          |             |
+	            ---------------
+literals		|             |   A
+		        ---------------   |
+instructions	|             |   |
+		        ---------------  low
+```
+
+stack by default, `Box`, `Vec`, `String`, `HashMap` resource on heap
+
+Scope <-> Curly braces <-> Stack
+
+function, struct are named scope, bare curly braces are anonymous scope
+
+---
+
+## Ownership
+
+* Move semantics by default
+* Copy marker
+* Borrowing
+* Lifetime(cross named scope boundary)
+
+---
+
+### Move & Copy
+
+
+https://is.gd/Lv9pOj
+```rust
+//#[derive(Copy, Clone)]
+struct Foo {
+	x: i32,
+}
+fn use_foo(f: Foo) {
+	println!("{}", f.x);
+}
+fn main() {
+	let f = Foo{x: 42};
+	use_foo(f);
+	println!("{}", f.x);
+}
+```
+
+`Vec`, `Box`, `String`, `HashMap` can't be Copy
+
+---
+
+### Borrowing
+
+Borrow checker: disallow value to be mutated or moved while they're borrowed
+
++ shared reference: &T
++ mutable reference: &mut T
+
+```rust
+fn push_all(from: &Vec<i32>, to: &mut Vec<i32>) {
+    for i in from.iter() {
+        to.push(*i);
+    }
+}
+```
+
+Resource has only one owner, either transfer it or lend resource to others. Make sure only one writer at the same time.
+
+Resource management follows [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) principal.
+
+---
+
+### Lifetime
+
+Named scope has to specify lifetime explicitly. https://is.gd/NB338R
+
+Prevents
+  * iterator invalidation
+  * use after free(dangling pointer)
+
+hyper [request](http://hyper.rs/hyper/v0.9.4/src/hyper/src/server/request.rs.html#19-31)
+```rust
+pub struct Request<'a, 'b: 'a> { // b > a
+    pub remote_addr: SocketAddr,
+    pub method: Method,
+    pub headers: Headers,
+    pub uri: RequestUri,
+    pub version: HttpVersion,
+    body: HttpReader<&'a mut BufReader<&'b mut NetworkStream>>
+}
+```
+
+None Lexical Lifetime(NLL): https://is.gd/fA3mJj
+
+
+---
+
+### Benefits
+
+* Memory safety without garbage collection
+* Concurrency without data races
+
+> A data race is any unsynchronized, concurrent access to data involving a write.
+
+GC can't prevent data races, ownership system guarantee compile time checks
+
+
+```rust
+fn send<T: Send>(chan: &Channel<T>, t: T);
+fn recv<T: Send>(chan: &Channel<T>) -> T;
+```
+
+```rust
+// create a new mutex
+fn mutex<T: Send>(t: T) -> Mutex<T>;
+
+// acquire the lock
+fn lock<T: Send>(mutex: &Mutex<T>) -> MutexGuard<T>;
+
+// access the data protected by the lock
+fn access<T: Send>(guard: &mut MutexGuard<T>) -> &mut T;
+```
+
+---
+
+# Efficiency: Zero-Cost Abstraction
+
+> "C++ implementations obey the zero-overhead principle: What you don’t use, you don’t pay for. And further: What you do use, you couldn’t hand code any better."  --- Stroustrup
+
+## Abstraction weapon: Trait
+
+* Static dispatch
+* Dynamic dispatch
+
+---
+
+### Static dispatch
+
+Generics are compiled away, abstraction over type T is erased, no runtime cost
+
+https://is.gd/7aUVzi
+
+```rust
+trait Hash {
+    fn hash(&self) -> u64;
+}
+impl Hash for bool {
+    fn hash(&self) -> u64 {
+        if *self { 0 } else { 1 }
+    }
+}
+impl Hash for i64 {
+    fn hash(&self) -> u64 {
+        *self as u64
+    }
+}
+fn print_hash<T: Hash>(t: &T) {
+    println!("The hash is {}", t.hash())
+}
+fn main() {
+	print_hash(&true); // __print_hash_bool(&true);
+	print_hash(&42_i64); // __print_hash_i64(&42_i64)
+}
+```
+
+`struct HashMap<Key: Hash + Eq, Value> { ... }`
+
+
+---
+
+### Dynamic dispatch
+
+http://is.gd/y8FLhB
+
+```rust
+struct Circle {
+    radius: f64
+}
+struct Rectangle {
+    width: f64,
+    length: f64,
+}
+trait Shape {
+    fn area(&self) -> f64;
+}
+impl Shape for Circle {
+    fn area(&self) -> f64 {
+        std::f64::consts::PI * self.radius * self.radius
+    }
+}
+impl Shape for Rectangle {
+    fn area(&self) -> f64 {
+        self.width * self.length
+    }
+}
+fn print_area1<T: Shape>(shapes: Vec<T>) {
+    println!("static dispatch");
+    for shape in shapes {
+        println!("{}", shape.area());
+    }
+}
+```
+
+---
+
+class: center, middle
+
+# Thank you!
+
+## Q & A
+
+    </textarea>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
