@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2019-02-18 Mon 00:07 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>调试 Docker 容器</title>
+<meta name="generator" content="Org mode" />
+<meta name="keywords" content="container debugging, container namespace, tidb" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel='stylesheet' href='/css/style.css' type='text/css' />
+  <script src='http://code.jquery.com/jquery-latest.min.js'></script>
+
+  <link rel='stylesheet'
+        href='http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css'>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js'></script>
+  <script>
+   $(document).ready(function() {
+       $('pre.src').each(function(i, block) {
+  	 hljs.highlightBlock(block);
+       });
+   });
+  </script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id='header'>
+     <h1>
+       <a href='/'>λ =&gt;&gt; 函舍空间</a>
+     </h1>
+   </div>
+</div>
+<div id="content">
+<h1 class="title">调试 Docker 容器</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org011d89a">1. 日志排查</a></li>
+<li><a href="#org88f7345">2. 进入容器环境中排查</a>
+<ul>
+<li><a href="#orgf44937b">2.1. 容器闪退</a></li>
+</ul>
+</li>
+<li><a href="#org8258e76">3. gdb/perf 调试应用程序</a></li>
+<li><a href="#orgf765e0c">4. 容器镜像里工具受限</a></li>
+<li><a href="#orgdb014d3">5. 参考文档</a></li>
+</ul>
+</div>
+</div>
+<p>
+Docker 容器作为虚拟化技术的一种，其轻量级的优点同时也带来了一些缺点：不彻底地隔离性给安全带来了隐患，裁减镜像增加了运维调试难度。本文以
+<a href="https://github.com/pingcap/tidb-docker-compose">tidb-docker-compose</a> 为例谈谈 Docker 容器在出现问题时如何进行调试排查问题。
+</p>
+
+<p>
+在开始之前我们可以通过下面的命令快速用 Docker Compose 在本地启动一个
+TiDB 集群。
+</p>
+
+<pre class="example">
+$ git clone https://github.com/pingcap/tidb-docker-compose
+$ cd tidb-docker-compose
+$ docker-compose pull &amp;&amp; docker-compose up -d
+</pre>
+
+<div id="outline-container-org011d89a" class="outline-2">
+<h2 id="org011d89a"><span class="section-number-2">1</span> 日志排查</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+应用出现问题时最简单直接的方式就是通过应用日志进行排查了，一般容器应用程序都是将日志输出到标准输出，然后被 Docker 收集，对于这种可以通过
+<code>docker logs</code> 和 <code>docker-compose logs</code> 命令查看日志，其中后者是Docker
+Compose 提供的，其命令参数直接是 service name，而不是包含目录名字的容器名，所以对 Docker Compose 启动的容器用后者更方便，但是这个命令需要在包含 docker-compose.yml 的目录下执行。
+</p>
+
+<p>
+tidb-docker-compose 运行起来后通过 <code>docker ps</code> 或 <code>docker-compose ps</code>
+命令查看容器运行状态，如下图所示：
+</p>
+
+<div class="figure">
+<p><img src="../images/docker-ps.png" alt="docker-ps.png" width="700" />
+</p>
+</div>
+
+<p>
+如下是查看 tispark-master 日志的方法
+</p>
+<pre class="example">
+$ docker logs tidb-docker-compose_tispark-master_1
+$ docker-compose logs tispark-master
+</pre>
+
+<p>
+<code>docker logs</code> 和 <code>docker-compose logs</code> 也支持 <code>-f</code> 参数实现类似于
+<code>tail -f</code> 方式实时查看日志。
+</p>
+
+<p>
+由于 Docker Compose 日志会丢，所以 tidb-docker-compose 将 pd/tikv/tidb
+的日志都输出到文件了，可以直接查看 logs 目录里对应的日志文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org88f7345" class="outline-2">
+<h2 id="org88f7345"><span class="section-number-2">2</span> 进入容器环境中排查</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+通过日志分析不出应用出问题的原因时，一般可能就是运行环境问题，这时进入容器里面查看网络情况、文件权限、环境变量、内核参数等是最快捷的方式了。进入容器环境，可以通过 <code>docker exec</code> 命令，对应 Docker Compose 也提供了 <code>docker-compose exec</code> 命令，但不用加 <code>-it</code> 参数。
+</p>
+
+<pre class="example">
+$ docker exec -it tidb-docker-compose_tikv0_1 sh
+$ docker-compose exec tikv0 sh
+</pre>
+
+
+<div class="figure">
+<p><img src="../images/docker-exec.png" alt="docker-exec.png" width="700" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf44937b" class="outline-3">
+<h3 id="orgf44937b"><span class="section-number-3">2.1</span> 容器闪退</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+这种在 docker-compose 和 Kubernetes 里面比较常见，不熟悉 docker 运行原理的同学可能会照网上搜到的一些零散知识将应用改造成 docker-compose 或
+Kubernetes 应用，结果应用程序水土不服，例如因为环境变量，volume 挂载，权限等问题刚一启动就崩了。
+</p>
+
+<p>
+由于容器一运行就退出，而 <code>docker exec</code> 命令使用对象是一个正在运行着的容器，所以没法通过这种方式去排查原因。
+</p>
+
+<p>
+但这时我们可以尝试让容器以一个能正常运行的命令启动而不直接运行应用程序，最简单的方式就是 sleep 了，但 pid 为 1 的 sleep 程序可能会导致容器无法被停掉。可以采用 <code>tail -f /dev/null</code> 来替代正常容器的启动命令。这样能保证容器运行起来，然后再通过前面提到的 <code>docker exec</code> 命令进入容器，查看容器网络和环境变量，也可以尝试手动将应用程序以较高的日志级别启动，看看问题出在哪里。目前 <a href="https://github.com/pingcap/tidb-operator">tidb-operator</a> 就是采用这种方式来调试出问题的 pod，效果还是很不错的。
+</p>
+
+
+<div class="figure">
+<p><img src="../images/tail-f-dev-null.png" alt="tail-f-dev-null.png" width="700" />
+</p>
+</div>
+
+<p>
+为了演示，将 docker-compose.yml 按上图修改 tidb 的启动命令为 <code>tail -f
+/dev/null</code> ，然后按下面命令删掉 tidb 容器并重新启动：
+</p>
+
+<pre class="example">
+$ docker-compose stop tidb
+$ docker-compose rm tidb
+$ docker-compose up -d
+</pre>
+
+<p>
+这样就解决了容器闪退的问题，再通过前面提到的 <code>docker exec</code> 命令进入容器，然后检查容器中的环境，例如网络、文件、环境变量等，再手动启动服务排查具体原因。
+</p>
+
+<pre class="example">
+$ docker-compose exec tidb sh
+# /tidb-server --store=tikv \
+--path=pd0:2379,pd1:2379,pd2:2379 \
+--config=/tidb.toml \
+--L=debug
+</pre>
+
+
+<div class="figure">
+<p><img src="../images/docker-exec-manual-start.png" alt="docker-exec-manual-start.png" width="700" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8258e76" class="outline-2">
+<h2 id="org8258e76"><span class="section-number-2">3</span> gdb/perf 调试应用程序</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+对于 C/C++/Rust 这种偏底层的应用程序，gdb/perf 是排查线上问题很有效的工具。在使用 gdb 调试运行中的应用程序时，需要应用程序的 pid 及其binary，实际上在宿主机上是能够直接看到容器里的应用程序 pid 的，所以是可以在宿主机上直接通过 gdb/perf 工具对容器里的进程进行调试的。不过只有 <a href="https://sourceware.org/bugzilla/show_bug.cgi?id=18368">高版本的 gdb 才支持 namespace</a>，一些版本相对较旧的系统如 CentOS 系统下就没法直接在宿主机上通过 gdb 调试 Docker 容器中的应用。
+</p>
+
+<p>
+要在宿主机上通过 gdb 调试容器里的进程，需要先获取应用的二进制程序，以及应用在宿主机上的 pid。下面以调试 tikv1 为例，其中 <code>31842</code> 是 tikv1
+在宿主机上的 pid：
+</p>
+
+<pre class="example">
+$ docker cp tidb-docker-compose_tikv1_1:/tikv-server tikv-server
+$ ps aux | grep tikv1
+$ sudo gdb tikv-server -p 31842 -batch -ex "thread apply all bt" -ex "info threads"
+</pre>
+
+<p>
+对于 perf 也是类似的，直接找到容器应用在宿主机上的 pid，然后用该 pid
+对容器进程进行调试。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf765e0c" class="outline-2">
+<h2 id="orgf765e0c"><span class="section-number-2">4</span> 容器镜像里工具受限</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+有时 <code>docker exec</code> 进入容器了，但是很多人为了减小容器镜像体积和攻击面而裁减掉了许多 Linux 下的基本工具，例如 ps 命令在很多容器里面就没有，更别说 curl 这类高级网络工具了，所以进到容器里面了也没法查。当然有些人可能会根据容器的基础镜像利用其包管理工具就地安装需要用的调试工具，这在某些情况下也是行之有效的。
+</p>
+
+<p>
+但是特殊情况下容器里面可能会没有包管理器或甚至基础镜像是 <a href="https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch">scratch</a>，这时由于连 shell 都没有， <code>docker exec</code> 命令也没法使用。但这是不是意味着应用程序除了通过日志外完全无法调试呢，答案显然是否定的。
+</p>
+
+<p>
+从 Docker 华丽的外表下回到容器的本质上，Linux 上的容器是利用 Linux 内核提供的 namespace 和 cgroup 实现的应用运行环境。namespace 包括 net,
+pid, uts, ipc, user, mount, 将不同容器运行环境相互隔离，但是不同容器又可以共享某些 namespace，比如 docker 早期支持的 <a href="https://docs.docker.com/network/links/">links</a> 就可以让多个容器共享 net namespace，Kubernetes 里的 pod 也是共享 net namespace，pod 甚至还可以共享 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/">pid namespace</a>。而调试容器应用的难点正是容器环境是一个隔离的，这个环境是一个孤岛，里面什么东西也没有。如果我们能打通这个孤岛，调试难的问题也就迎刃而解。
+</p>
+
+<p>
+明白了原理，我们就来实际操作一下。以下示例用 <a href="https://github.com/pingcap/tidb-docker-compose/blob/master/docker/debug/Dockerfile">tidb-debug</a> 镜像作为调试工具镜像，该镜像里面包含很多常用工具，镜像体积相对比较大，实际调试时可以是任何包含所需工具的镜像。注意下面命令中启动 debugger 容器时加了
+<code>SYS_PTRACE</code> 参数，这是因为 gdb 和 strace 之类的调试工具需要 ptrace 权限。
+</p>
+
+<pre class="example">
+$ docker run -it --rm --name=debugger --cap-add=SYS_PTRACE \
+--pid=container:tidb-docker-compose_tikv0_1 \
+--network=container:tidb-docker-compose_tikv0_1 \
+uhub.ucloud.cn/pingcap/tidb-debug
+</pre>
+
+<p>
+上面例子只是进入了 tikv0 的 pid 和 network namespace，可以使用
+tidb-debug 容器中的各种网络工具对 tikv0 容器进行调试，也可以用
+gdb/perf 之类工具对 tikv-server 进程进行调试，如果要需要 tikv-server
+的二进制程序，可以利用 <code>docker cp</code> 命令经主机中转一下拷贝到 tidb-debug
+容器中，但是由于 pid 已经共享，实际从 tidb-debug 容器中就能看到 pid 为
+1 的 tikv-server 进程，而 <code>/proc/1/exe</code> 即是 tikv-server 的二进制程序。
+</p>
+
+<pre class="example">
+# ldd /proc/1/exe
+# gdb /proc/1/exe 1 -batch -ex "thread apply all bt" -ex "info threads"
+# curl http://pd0:2379/pd/api/v1/stores
+</pre>
+
+<p>
+实际上 tidb-docker-compose 项目中提供了一个方便的<a href="https://github.com/pingcap/tidb-docker-compose/blob/master/tools/container_debug">脚本</a>用于调试诊断。
+</p>
+
+<pre class="example">
+$ tools/container_debug -s tikv2 -p /tikv-server
+# gdb /tikv-server 1 -batch -ex "thread apply all bt" -ex "info threads"
+# ./run_flamegraph.sh 1
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgdb014d3" class="outline-2">
+<h2 id="orgdb014d3"><span class="section-number-2">5</span> 参考文档</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://blog.wnohang.net/index.php/2015/05/05/debugging-docker-containers-with-gdb-and-nsenter/">https://blog.wnohang.net/index.php/2015/05/05/debugging-docker-containers-with-gdb-and-nsenter/</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<div id='footer'>&copy;Copyright by <a href='https://github.com/tennix'>Tennix</a> 2018 | Powered by <a href='https://orgmode.org'>Emacs Orgmode</a></div>
+</div>
+</body>
+</html>
