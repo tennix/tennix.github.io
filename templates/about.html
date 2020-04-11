@@ -1,0 +1,14 @@
+{% extends "even/templates/index.html" %}
+
+{% block content %}
+    <div class="about">
+        {{ page.content | safe }}
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    <div class="footer" style="text-align: center;">
+        &copy;Copyright by <a href="https://github.com/tennix">Tennix</a> 2020<br>
+        Powered by <a href="https://www.getzola.org">Zola</a> and <a href="https://github.com/getzola/even">Even theme</a>
+    </div>
+{% endblock footer %}
