@@ -1,11 +1,11 @@
 +++
-title = "调试 Docker 容器"
+title = "如何调试 Docker 容器"
 description = ""
 date = 2019-12-22
 
 [taxonomies]
 categories = ["container"]
-tags = ["diagnosis"]
+tags = ["Docker", "diagnosis"]
 +++
 
 [Docker](https://www.docker.com/) 容器作为虚拟化技术的一种，其轻量级的优点同时也带来了一些缺点：不彻底的隔离性给安全带来了隐患，裁减镜像增加了运维调试难度。本文以 [tidb-docker-compose](https://github.com/pingcap/tidb-docker-compose) 为例，谈谈在 Docker 容器出现问题时，如何进行调试排查。
@@ -20,7 +20,7 @@ $ cd tidb-docker-compose
 $ docker-compose pull && docker-compose up -d
 ```
 
-## 方法 1：通过日志排查
+## 方法 1：通过日志进行排查
 
 当应用出现问题时，最简单直接的方式就是通过应用日志进行排查了。一般容器应用程序都是将日志输出到标准输出，然后被 Docker 收集。对于这种情况，可以通过 `docker logs` 和 `docker-compose logs` 命令查看日志。其中后者是 Docker Compose 提供的，其命令参数直接是 service name，而不是包含目录名字的容器名。所以，对于用 Docker Compose 启动的容器，使用后者更方便，但是这个命令需要在包含 `docker-compose.yml` 的目录下执行。
 
@@ -67,11 +67,11 @@ docker-compose exec tikv0 sh
 但我们可以采用 `tail -f /dev/null` 来替代正常容器的启动命令，这样能保证容器运行起来。然后，再通过前面提到的 `docker exec` 命令进入容器，查看容器网络和环境变量；也可以尝试手动将应用程序以较高的日志级别启动，看看问题出在哪里。目前 [TiDB Operator](https://github.com/pingcap/tidb-operator) 就是采用这种方式来调试出问题的 Pod，
 效果还是很不错的。
 
-1. 为了演示，将 `docker-compose.yml` 文件中 TiDB 的启动命令更改为 `tail -f /dev/null`。
+1. 将应用程序的启动命令更改为 `tail -f /dev/null`。本例中将 `docker-compose.yml` 文件中 TiDB 的启动命令更改为 `tail -f /dev/null`。
 
     ![tail -f /dev/null](/images/tail-f-dev-null.png)
 
-2. 使用以下命令删掉 TiDB 容器，并重新启动。
+2. 使用以下命令删掉容器（本例中为 `tidb`），并重新启动。
 
     ```sh
     $ docker-compose stop tidb
@@ -93,7 +93,7 @@ docker-compose exec tikv0 sh
 
     ![docker exec manual start](/images/docker-exec-manual-start.png)
 
-## 方法 3：使用 GDB 或 perf 进行排查
+## 方法 3：在宿主机上使用 GDB 或 perf 进行排查
 
 对于 C、C++、[Rust](https://www.rust-lang.org/) 这种偏底层的应用程序，[GDB](https://en.wikipedia.org/wiki/GNU_Debugger) 和 [perf](https://en.wikipedia.org/wiki/Perf_(Linux)) 是很有效的线上问题排查工具。
 
