@@ -115,34 +115,46 @@ $ sudo gdb tikv-server -p 31842 -batch -ex "thread apply all bt" -ex "info threa
 
 但是特殊情况下，容器里面可能会没有包管理器或甚至基础镜像是 [scratch](https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch)，这时由于连基本的 shell 都没有， `docker exec` 命令也没法使用。但这是不是意味着应用程序除了通过日志外完全无法调试呢？答案显然是否定的。
 
-从 Docker 华丽的外表下回到容器的本质上，Linux 上的容器是利用 Linux 内核提供的 [namespace](https://en.wikipedia.org/wiki/Linux_namespaces) 和 [cgroup](https://en.wikipedia.org/wiki/Cgroups) 实现的应用运行环境。namespace 包括 net、PID、uts、ipc、user、mount，将不同容器运行环境相互隔离，但是不同容器又可以共享某些 namespace。比如，Docker 早期支持的 [links](https://docs.docker.com/network/links/) 就可以让多个容器共享 net namespace；Kubernetes 里的 [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod/) 也是共享 net namespace，Pod 甚至还可以共享 [PID namespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/)。而调试容器应用的难点正是容器环境是一个隔离的环境，这个环境是一个孤岛，里面什么东西也没有。如果我们能打通这个孤岛，调试难的问题也就迎刃而解。
+从 Docker 华丽的外表下回到容器的本质上，Linux 上的容器是利用 Linux 内核提供的 [namespace](https://en.wikipedia.org/wiki/Linux_namespaces) 和 [cgroup](https://en.wikipedia.org/wiki/Cgroups) 实现的应用运行环境。namespace 包括 net、PID、uts、ipc、user、mount，将不同容器运行环境相互隔离，但是不同容器又可以共享某些 namespace。比如，Docker 早期支持的 [links](https://docs.docker.com/network/links/) 就可以让多个容器共享 net namespace；Kubernetes 里的 [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod/) 也是共享 net namespace，Pod 甚至还可以共享 [PID namespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/)。
 
-明白了原理，我们就来实际操作一下。以下示例用 [tidb-debug](https://github.com/pingcap/tidb-docker-compose/blob/master/docker/debug/Dockerfile) 镜像作为调试工具镜像。该镜像里面包含很多常用工具，镜像体积相对比较大，实际调试时可以是任何包含所需工具的镜像。注意下面命令中启动 debugger 容器时加了 `SYS_PTRACE` 参数，这是因为 GDB 和 strace 之类的调试工具需要 ptrace 权限。
+而**调试容器应用的难点**正在于容器环境是一个隔离的环境，这个环境是一个孤岛，里面什么东西也没有。如果我们能打通这个孤岛，调试难的问题也就迎刃而解。
 
-```sh
-$ docker run -it --rm --name=debugger --cap-add=SYS_PTRACE \
---PID=container:tidb-docker-compose_tikv0_1 \
---network=container:tidb-docker-compose_tikv0_1 \
-uhub.ucloud.cn/pingcap/tidb-debug
-```
+明白了原理，我们就来实际操作一下。
 
-上面例子只是进入了 tikv0 的 PID 和 network namespace，可以使用 tidb-debug 容器中的各种网络工具对 tikv0 容器进行调试，也可以用 GDB/perf 之类的工具对 tikv-server 进程进行调试。如果要需要 tikv-server 的二进制程序，可以利用 `docker cp` 命令经主机中转一下拷贝到 tidb-debug 容器中。但是由于 PID 已经共享，实际从 tidb-debug 容器中就能看到 PID 为 1 的 tikv-server 进程，而 `/proc/1/exe` 即是 tikv-server 的二进制程序。
+1. 进入 namespace。
 
-```sh
-# ldd /proc/1/exe
-# gdb /proc/1/exe 1 -batch -ex "thread apply all bt" -ex "info threads"
-# curl http://pd0:2379/pd/api/v1/stores
-```
+    以下示例用 [tidb-debug](https://github.com/pingcap/tidb-docker-compose/blob/master/docker/debug/Dockerfile) 镜像作为调试工具镜像。该镜像里面包含很多常用工具，镜像体积相对比较大，实际调试时可以是任何包含所需工具的镜像。注意下面命令中启动 debugger 容器时加了 `SYS_PTRACE` 参数，这是因为 GDB 和 strace 之类的调试工具需要 ptrace 权限。
 
-实际上 tidb-docker-compose 项目中提供了一个方便的[脚本](https://github.com/pingcap/tidb-docker-compose/blob/master/tools/container_debug)用于调试诊断。
+    ```sh
+    $ docker run -it --rm --name=debugger --cap-add=SYS_PTRACE \
+    --PID=container:tidb-docker-compose_tikv0_1 \
+    --network=container:tidb-docker-compose_tikv0_1 \
+    uhub.ucloud.cn/pingcap/tidb-debug
+    ```
 
-```sh
-$ tools/container_debug -s tikv2 -p /tikv-server
-# gdb /tikv-server 1 -batch -ex "thread apply all bt" -ex "info threads"
-# ./run_flamegraph.sh 1
-```
+    通过执行以上命令，即进入了 tikv0 的 PID 和 network namespace。
 
-社区 [kubectl-debug](https://github.com/aylei/kubectl-debug) 和 [docker-debug](https://github.com/zeromake/docker-debug) 也是利用这个原理实现了 K8s 和 Docker 上的容器便捷调试工具。
+2. 根据具体问题进行调试。
+
+    本例中，可以使用 tidb-debug 容器中的各种网络工具对 tikv0 容器进行调试，也可以使用 GDB/perf 之类的工具对 tikv-server 进程进行调试。
+
+    如果要需要 tikv-server 的二进制程序，可以利用 `docker cp` 命令经主机中转一下拷贝到 tidb-debug 容器中。但是由于 PID 已经共享，实际从 tidb-debug 容器中就能看到 PID 为 1 的 tikv-server 进程，而 `/proc/1/exe` 即是 tikv-server 的二进制程序。
+
+    ```sh
+    # ldd /proc/1/exe
+    # gdb /proc/1/exe 1 -batch -ex "thread apply all bt" -ex "info threads"
+    # curl http://pd0:2379/pd/api/v1/stores
+    ```
+
+    实际上 tidb-docker-compose 项目中提供了一个方便的[脚本](https://github.com/pingcap/tidb-docker-compose/blob/master/tools/container_debug)用于调试诊断。
+
+    ```sh
+    $ tools/container_debug -s tikv2 -p /tikv-server
+    # gdb /tikv-server 1 -batch -ex "thread apply all bt" -ex "info threads"
+    # ./run_flamegraph.sh 1
+    ```
+
+    社区 [kubectl-debug](https://github.com/aylei/kubectl-debug) 和 [docker-debug](https://github.com/zeromake/docker-debug) 也是利用这个原理实现了 K8s 和 Docker 上的容器便捷调试工具。
 
 ## 参考文档
 
