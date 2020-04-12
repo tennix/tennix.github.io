@@ -1,3 +1,4 @@
+dist: bionic # need bionic as workaround for libssl.so missing https://github.com/getzola/zola/issues/861
 language: minimal
 
 before_script:
