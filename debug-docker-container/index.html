@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>λ =&gt;&gt; 函舍空间 - 如何调试 Docker 容器</title>
+
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;funcer.xyz&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">λ =&gt;&gt; 函舍空间</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;funcer.xyz">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;funcer.xyz">λ =&gt;&gt; 函舍空间</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;funcer.xyz">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://funcer.xyz/debug-docker-container/#fang-fa-1-tong-guo-ri-zhi-jin-xing-pai-cha" class="toc-link">方法 1：通过日志进行排查</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://funcer.xyz/debug-docker-container/#fang-fa-2-jin-ru-rong-qi-huan-jing-zhong-pai-cha" class="toc-link">方法 2：进入容器环境中排查</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://funcer.xyz/debug-docker-container/#rong-qi-zheng-chang" class="toc-link">容器正常</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://funcer.xyz/debug-docker-container/#rong-qi-shan-tui" class="toc-link">容器闪退</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://funcer.xyz/debug-docker-container/#fang-fa-3-zai-su-zhu-ji-shang-shi-yong-gdb-huo-perf-jin-xing-pai-cha" class="toc-link">方法 3：在宿主机上使用 GDB 或 perf 进行排查</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://funcer.xyz/debug-docker-container/#fang-fa-4-lian-jie-rong-qi-namespace-jin-xing-pai-cha" class="toc-link">方法 4：连接容器 namespace 进行排查</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://funcer.xyz/debug-docker-container/#can-kao-wen-dang" class="toc-link">参考文档</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;debug-docker-container&#x2F;">如何调试 Docker 容器</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2019-12-22</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <p><a href="https://www.docker.com/">Docker</a> 容器作为虚拟化技术的一种，其轻量级的优点同时也带来了一些缺点：不彻底的隔离性给安全带来了隐患，裁减镜像增加了运维调试难度。本文以 <a href="https://github.com/pingcap/tidb-docker-compose">tidb-docker-compose</a> 为例，谈谈在 Docker 容器出现问题时，如何进行调试排查。</p>
+<span id="continue-reading"></span>
+<p>在开始之前，可以通过以下命令用 <a href="https://docs.docker.com/compose/">Docker Compose</a> 在本地快速启动一个 <a href="https://github.com/pingcap/tidb">TiDB</a> 集群。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> git clone https://github.com/pingcap/tidb-docker-compose
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> cd tidb-docker-compose
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose pull </span><span style="color:#859900;">&amp;&amp; </span><span style="color:#268bd2;">docker-compose</span><span style="color:#657b83;"> up</span><span style="color:#268bd2;"> -d
+</span></pre><h2 id="fang-fa-1-tong-guo-ri-zhi-jin-xing-pai-cha">方法 1：通过日志进行排查<a class="zola-anchor" href="#fang-fa-1-tong-guo-ri-zhi-jin-xing-pai-cha" aria-label="Anchor link for: fang-fa-1-tong-guo-ri-zhi-jin-xing-pai-cha">🔗</a></h2>
+<p>当应用出现问题时，最简单直接的方式就是通过应用日志进行排查了。一般容器应用程序都是将日志输出到标准输出，然后被 Docker 收集。对于这种情况，可以通过 <code>docker logs</code> 和 <code>docker-compose logs</code> 命令查看日志。其中后者是 Docker Compose 提供的，其命令参数直接是 service name，而不是包含目录名字的容器名。所以，对于用 Docker Compose 启动的容器，使用后者更方便，但是这个命令需要在包含 <code>docker-compose.yml</code> 的目录下执行。</p>
+<ol>
+<li>
+<p>查看容器运行状态。tidb-docker-compose 运行起来后，通过 <code>docker ps</code> 或 <code>docker-compose ps</code> 命令查看容器运行状态，如下图所示：</p>
+<p><img src="/images/docker-ps.png" alt="docker ps" /></p>
+</li>
+<li>
+<p>查看日志。以下是查看 tispark-master 日志的方法：</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker logs tidb-docker-compose_tispark-master_1
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose logs tispark-master
+</span></pre>
+<p>此外，<code>docker logs</code> 和 <code>docker-compose logs</code> 也支持使用 <code>-f</code> 参数实现类似于 <code>tail -f</code> 的方式实时查看日志。</p>
+<p>由于 Docker Compose 日志会丢，所以 tidb-docker-compose 将 pd/tikv/tidb 的日志都输出到文件了，可以直接查看 logs 目录里对应的日志文件。</p>
+</li>
+</ol>
+<h2 id="fang-fa-2-jin-ru-rong-qi-huan-jing-zhong-pai-cha">方法 2：进入容器环境中排查<a class="zola-anchor" href="#fang-fa-2-jin-ru-rong-qi-huan-jing-zhong-pai-cha" aria-label="Anchor link for: fang-fa-2-jin-ru-rong-qi-huan-jing-zhong-pai-cha">🔗</a></h2>
+<p>如果通过日志无法分析出应用出问题的原因，一般可能就是运行环境问题，又分为<a href="https://funcer.xyz/debug-docker-container/#%E5%AE%B9%E5%99%A8%E6%AD%A3%E5%B8%B8">容器正常</a>和<a href="https://funcer.xyz/debug-docker-container/#%E5%AE%B9%E5%99%A8%E9%97%AA%E9%80%80">容器闪退</a>两种情况。</p>
+<h3 id="rong-qi-zheng-chang">容器正常<a class="zola-anchor" href="#rong-qi-zheng-chang" aria-label="Anchor link for: rong-qi-zheng-chang">🔗</a></h3>
+<p>这种情况下，最快捷的排查方式就是进入容器里面查看网络情况、文件权限、环境变量、内核参数等。</p>
+<p>可以使用 <code>docker exec</code> 命令进入容器环境。相应地，Docker Compose 也提供了 <code>docker-compose exec</code> 命令，但不用加 <code>-it</code> 参数。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">docker</span><span style="color:#657b83;"> exec</span><span style="color:#268bd2;"> -it</span><span style="color:#657b83;"> tidb-docker-compose_tikv0_1 sh
+</span><span style="color:#268bd2;">docker-compose</span><span style="color:#657b83;"> exec tikv0 sh
+</span></pre>
+<p><img src="/images/docker-exec.png" alt="docker exec" /></p>
+<h3 id="rong-qi-shan-tui">容器闪退<a class="zola-anchor" href="#rong-qi-shan-tui" aria-label="Anchor link for: rong-qi-shan-tui">🔗</a></h3>
+<p>容器闪退在 Docker Compose 和 <a href="https://kubernetes.io/">Kubernetes</a> 里面比较常见。不熟悉 Docker 运行原理的同学可能会参照网上搜到的一些零散知识将应用改造成 docker-compose 或 Kubernetes 应用，结果应用程序水土不服。例如，因为环境变量、volume 挂载、权限等问题，刚一启动就崩了。</p>
+<p>由于容器一运行就退出，而 <code>docker exec</code> 命令的使用对象是一个正在运行着的容器，所以没法通过这种方式去排查原因。</p>
+<p>这时，可以尝试让容器以一个能正常运行的命令启动而不直接运行应用程序。最简单的方式就是 <code>sleep</code> 了，但 PID 为 1 的 <code>sleep</code> 程序可能会导致容器无法被停掉。</p>
+<p>但我们可以采用 <code>tail -f /dev/null</code> 来替代正常容器的启动命令，这样能保证容器运行起来。然后，再通过前面提到的 <code>docker exec</code> 命令进入容器，查看容器网络和环境变量；也可以尝试手动将应用程序以较高的日志级别启动，看看问题出在哪里。目前 <a href="https://github.com/pingcap/tidb-operator">TiDB Operator</a> 就是采用这种方式来调试出问题的 Pod，
+效果还是很不错的。</p>
+<ol>
+<li>
+<p>将应用程序的启动命令更改为 <code>tail -f /dev/null</code>。本例中将 <code>docker-compose.yml</code> 文件中 TiDB 的启动命令更改为 <code>tail -f /dev/null</code>。</p>
+<p><img src="/images/tail-f-dev-null.png" alt="tail -f /dev/null" /></p>
+</li>
+<li>
+<p>使用以下命令删掉容器（本例中为 <code>tidb</code>），并重新启动。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose stop tidb
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose rm tidb
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose up</span><span style="color:#268bd2;"> -d
+</span></pre>
+<p>这样就解决了容器闪退的问题。</p>
+</li>
+<li>
+<p>通过 <code>docker exec</code> 命令进入容器，然后检查容器中的环境（例如网络、文件、环境变量等），再手动启动服务排查具体原因。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker-compose exec tidb sh
+</span><span style="color:#93a1a1;"># /tidb-server --store=tikv \
+</span><span style="color:#268bd2;">--path</span><span style="color:#657b83;">=</span><span style="color:#2aa198;">pd0:2379,pd1:2379,pd2:2379 </span><span style="color:#dc322f;">\
+</span><span style="color:#268bd2;">--config</span><span style="color:#657b83;">=</span><span style="color:#2aa198;">/tidb.toml </span><span style="color:#dc322f;">\
+</span><span style="color:#268bd2;">--L</span><span style="color:#657b83;">=</span><span style="color:#2aa198;">debug
+</span></pre>
+<p><img src="/images/docker-exec-manual-start.png" alt="docker exec manual start" /></p>
+</li>
+</ol>
+<h2 id="fang-fa-3-zai-su-zhu-ji-shang-shi-yong-gdb-huo-perf-jin-xing-pai-cha">方法 3：在宿主机上使用 GDB 或 perf 进行排查<a class="zola-anchor" href="#fang-fa-3-zai-su-zhu-ji-shang-shi-yong-gdb-huo-perf-jin-xing-pai-cha" aria-label="Anchor link for: fang-fa-3-zai-su-zhu-ji-shang-shi-yong-gdb-huo-perf-jin-xing-pai-cha">🔗</a></h2>
+<p>对于 C、C++、<a href="https://www.rust-lang.org/">Rust</a> 这种偏底层的应用程序，<a href="https://en.wikipedia.org/wiki/GNU_Debugger">GDB</a> 和 <a href="https://en.wikipedia.org/wiki/Perf_(Linux)">perf</a> 是很有效的线上问题排查工具。</p>
+<p>在使用 GDB 调试运行中的应用程序时，需要应用程序的 PID 及其 binary。而在宿主机上能够直接看到容器里应用程序的 PID，所以可以在宿主机上直接通过 GDB/perf 工具对容器里的进程进行调试。不过只有<a href="https://sourceware.org/bugzilla/show_bug.cgi?id=18368">高版本的 GDB 才支持 namespace</a>，一些版本相对较旧的系统（如 CentOS 系统）下就没法直接在宿主机上通过 GDB 调试 Docker 容器中的应用。</p>
+<p>要在宿主机上通过 GDB 调试容器里的进程，需要先获取应用的二进制程序，以及应用在宿主机上的 PID。下面以调试 tikv1 为例，其中 <code>31842</code> 是 tikv1 在宿主机上的 PID：</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker cp tidb-docker-compose_tikv1_1:/tikv-server tikv-server
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> ps aux </span><span style="color:#859900;">| </span><span style="color:#268bd2;">grep</span><span style="color:#657b83;"> tikv1
+</span><span style="color:#268bd2;">$</span><span style="color:#657b83;"> sudo gdb tikv-server</span><span style="color:#268bd2;"> -p</span><span style="color:#657b83;"> 31842</span><span style="color:#268bd2;"> -batch -ex </span><span style="color:#839496;">&quot;</span><span style="color:#2aa198;">thread apply all bt</span><span style="color:#839496;">&quot;</span><span style="color:#268bd2;"> -ex </span><span style="color:#839496;">&quot;</span><span style="color:#2aa198;">info threads</span><span style="color:#839496;">&quot;
+</span></pre>
+<p>对于 perf 也是类似的，直接找到容器应用在宿主机上的 PID，然后用该 PID 对容器进程进行调试。</p>
+<h2 id="fang-fa-4-lian-jie-rong-qi-namespace-jin-xing-pai-cha">方法 4：连接容器 namespace 进行排查<a class="zola-anchor" href="#fang-fa-4-lian-jie-rong-qi-namespace-jin-xing-pai-cha" aria-label="Anchor link for: fang-fa-4-lian-jie-rong-qi-namespace-jin-xing-pai-cha">🔗</a></h2>
+<p>有时通过 <code>docker exec</code> 命令进入容器了，但是很多人为了减小容器镜像体积和攻击面而裁减掉了许多 Linux 下的基本工具，例如 <code>ps</code> 命令在很多容器里面就没有，更别说 <a href="https://curl.haxx.se/">curl</a> 这类高级网络工具了，所以进到容器里面了也没法查。当然有些人可能会根据容器的基础镜像利用其包管理工具就地安装需要用的调试工具，这在某些情况下也是行之有效的。</p>
+<p>但是特殊情况下，容器里面可能会没有包管理器或甚至基础镜像是 <a href="https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch">scratch</a>，这时由于连基本的 shell 都没有， <code>docker exec</code> 命令也没法使用。但这是不是意味着应用程序除了通过日志外完全无法调试呢？答案显然是否定的。</p>
+<p>从 Docker 华丽的外表下回到容器的本质上，Linux 上的容器是利用 Linux 内核提供的 <a href="https://en.wikipedia.org/wiki/Linux_namespaces">namespace</a> 和 <a href="https://en.wikipedia.org/wiki/Cgroups">cgroup</a> 实现的应用运行环境。namespace 包括 net、PID、uts、ipc、user、mount，将不同容器运行环境相互隔离，但是不同容器又可以共享某些 namespace。比如，Docker 早期支持的 <a href="https://docs.docker.com/network/links/">links</a> 就可以让多个容器共享 net namespace；Kubernetes 里的 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod/">Pod</a> 也是共享 net namespace，Pod 甚至还可以共享 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/">PID namespace</a>。</p>
+<p>而<strong>调试容器应用的难点</strong>正在于容器环境是一个隔离的环境，这个环境是一个孤岛，里面什么东西也没有。如果我们能打通这个孤岛，调试难的问题也就迎刃而解。</p>
+<p>明白了原理，我们就来实际操作一下。</p>
+<ol>
+<li>
+<p>进入 namespace。</p>
+<p>以下示例用 <a href="https://github.com/pingcap/tidb-docker-compose/blob/master/docker/debug/Dockerfile">tidb-debug</a> 镜像作为调试工具镜像。该镜像里面包含很多常用工具，镜像体积相对比较大，实际调试时可以是任何包含所需工具的镜像。注意下面命令中启动 debugger 容器时加了 <code>SYS_PTRACE</code> 参数，这是因为 GDB 和 strace 之类的调试工具需要 ptrace 权限。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> docker run</span><span style="color:#268bd2;"> -it --rm --name</span><span style="color:#657b83;">=debugger</span><span style="color:#268bd2;"> --cap-add</span><span style="color:#657b83;">=SYS_PTRACE </span><span style="color:#dc322f;">\
+</span><span style="color:#268bd2;">--PID</span><span style="color:#657b83;">=container:tidb-docker-compose_tikv0_1 </span><span style="color:#dc322f;">\
+</span><span style="color:#268bd2;">--network</span><span style="color:#657b83;">=container:tidb-docker-compose_tikv0_1 </span><span style="color:#dc322f;">\
+</span><span style="color:#657b83;">uhub.ucloud.cn/pingcap/tidb-debug
+</span></pre>
+<p>通过执行以上命令，即进入了 tikv0 的 PID 和 network namespace。</p>
+</li>
+<li>
+<p>根据具体问题进行调试。</p>
+<p>本例中，可以使用 tidb-debug 容器中的各种网络工具对 tikv0 容器进行调试，也可以使用 GDB/perf 之类的工具对 tikv-server 进程进行调试。</p>
+<p>如果要需要 tikv-server 的二进制程序，可以利用 <code>docker cp</code> 命令经主机中转一下拷贝到 tidb-debug 容器中。但是由于 PID 已经共享，实际从 tidb-debug 容器中就能看到 PID 为 1 的 tikv-server 进程，而 <code>/proc/1/exe</code> 即是 tikv-server 的二进制程序。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#93a1a1;"># ldd /proc/1/exe
+</span><span style="color:#93a1a1;"># gdb /proc/1/exe 1 -batch -ex &quot;thread apply all bt&quot; -ex &quot;info threads&quot;
+</span><span style="color:#93a1a1;"># curl http://pd0:2379/pd/api/v1/stores
+</span></pre>
+<p>实际上 tidb-docker-compose 项目中提供了一个方便的<a href="https://github.com/pingcap/tidb-docker-compose/blob/master/tools/container_debug">脚本</a>用于调试诊断。</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#268bd2;">$</span><span style="color:#657b83;"> tools/container_debug</span><span style="color:#268bd2;"> -s</span><span style="color:#657b83;"> tikv2</span><span style="color:#268bd2;"> -p</span><span style="color:#657b83;"> /tikv-server
+</span><span style="color:#93a1a1;"># gdb /tikv-server 1 -batch -ex &quot;thread apply all bt&quot; -ex &quot;info threads&quot;
+</span><span style="color:#93a1a1;"># ./run_flamegraph.sh 1
+</span></pre>
+<p>社区 <a href="https://github.com/aylei/kubectl-debug">kubectl-debug</a> 和 <a href="https://github.com/zeromake/docker-debug">docker-debug</a> 也是利用这个原理实现了 K8s 和 Docker 上的容器便捷调试工具。</p>
+</li>
+</ol>
+<h2 id="can-kao-wen-dang">参考文档<a class="zola-anchor" href="#can-kao-wen-dang" aria-label="Anchor link for: can-kao-wen-dang">🔗</a></h2>
+<ul>
+<li><a href="https://blog.wnohang.net/index.php/2015/05/05/debugging-docker-containers-with-gdb-and-nsenter/">debugging-docker-containers-with-gdb-and-nsenter</a></li>
+</ul>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+                <div class="post-tags">
+                    
+                        <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;tags&#x2F;docker&#x2F;">#Docker</a>
+                    
+                        <a href="https:&#x2F;&#x2F;funcer.xyz&#x2F;tags&#x2F;diagnosis&#x2F;">#diagnosis</a>
+                    
+                </div>
+            
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+    <div class="footer" style="text-align: center;">
+      &copy;Copyright by <a href="https://github.com/tennix">Tennix</a> 2020</br>
+      Powered by <a href="https://www.getzola.org">Zola</a> and <a href="https://github.com/getzola/even">Even theme</a>
+    </div>
+
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;funcer.xyz&#x2F;even.js" ></script>
+      
+    </body>
+
+</html>
