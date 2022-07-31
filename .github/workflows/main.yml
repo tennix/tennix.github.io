@@ -14,4 +14,4 @@ jobs:
           # Target branch
           PAGES_BRANCH: master
           # Provide personal access token
-          TOKEN: ${{ secrets.TOKEN }}
+          #TOKEN: ${{ secrets.TOKEN }}
