@@ -15,4 +15,3 @@ jobs:
           PAGES_BRANCH: master
           # Provide personal access token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #TOKEN: ${{ secrets.TOKEN }}
