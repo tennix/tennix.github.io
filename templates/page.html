@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+    {{ macros_content::content(page=page)}}
+    <!-- Utterances uses GitHub issue for comment -->
+    <div class="comments">
+      <script async src="https://utteranc.es/client.js"
+              repo="tennix/tennix.github.io"
+              issue-term="pathname"
+              label="comment"
+              theme="preferred-color-scheme"
+              crossorigin="anonymous">
+      </script>
+    </div>
+
+{% endblock main_content %}

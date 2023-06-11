@@ -155,3 +155,17 @@ socials = [
     { name = "Twitter", url = "https://twitter.com/ztennix", icon = "twitter" },
     { name = "LinkedIn", url = "https://www.linkedin.com/in/shuan-deng-6b5a6698/", icon = "linkedin" },
 ]
+
+# Custom security headers. What urls should your website be able to connect to?
+# You need to specify the CSP and the URLs associated with the directive.
+# Useful if you want to load remote content safely (embed YouTube videos, which needs frame-src, for example).
+# Default directive is self.
+# Default config, allows for https remote images and embedding YouTube and Vimeo content.
+# This configuration (along with the right webserver settings) gets an A+ in Mozilla's Observatory: https://observatory.mozilla.org
+allowed_domains = [
+    { directive = "font-src", domains = ["'self'", "data:"] },
+    { directive = "img-src", domains = ["'self'", "https://*", "data:"] },
+    { directive = "script-src", domains = ["'self'", "utteranc.es"] },
+    { directive = "style-src", domains = ["'self'"] },
+    { directive = "frame-src", domains = ["player.vimeo.com", "https://www.youtube-nocookie.com", "utteranc.es"] },
+]
