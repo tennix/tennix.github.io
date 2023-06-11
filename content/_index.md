@@ -1,6 +1,8 @@
 +++
-paginate_by = 10
+title = "Latest Posts"
 sort_by = "date"
-paginate_path = "p"
-insert_anchor_links = "right"
+
+[extra]
+section_path = "blog/_index.md"
+max_posts = 4
 +++

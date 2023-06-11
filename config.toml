@@ -2,14 +2,14 @@
 base_url = "https://blog.funcer.xyz"
 
 # The site title and description; used in feeds by default.
-title = "λ =>> 函舍空间"
+title = "λ => 函舍空间"
 description = ""
 
 # The default language; used in feeds.
 default_language = "en"
 
 # The site theme to use.
-theme = "even"
+theme = "tabi"
 
 # For overriding the default output directory `public`, set it to another value (e.g.: "docs")
 output_dir = "public"
@@ -56,7 +56,6 @@ hard_link_static = false
 #     ]
 #
 taxonomies = [
-    {name = "categories", feed = true},
     {name = "tags", feed = true},
 ]
 
@@ -73,7 +72,7 @@ extra_syntaxes_and_themes = []
 
 # The theme to use for code highlighting.
 # See below for list of allowed values.
-highlight_theme = "solarized-light"
+highlight_theme = "css"
 
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
@@ -81,7 +80,7 @@ render_emoji = false
 
 # Whether external links are to be opened in a new tab
 # If this is true, a `rel="noopener"` will always automatically be added for security reasons
-external_links_target_blank = false
+external_links_target_blank = true
 
 # Whether to set rel="nofollow" for all external links
 external_links_no_follow = false
@@ -138,22 +137,21 @@ include_content = true
 #
 [translations]
 
-# Additional languages definition
-# You can define language specific config values and translations:
-# title, description, generate_feed, feed_filename, taxonomies, build_search_index
-# as well as its own search configuration and translations (see above for details on those)
-[languages]
-[languages.zh]
-generated_feed = true
-build_search_index = false
-
 [extra]
 # Put all your custom variables here
-author = "Tennix"
-even_title = "λ =>> 函舍空间"
-even_menu = [
-    {url = "$BASE_URL", name = "Home"},
-    {url = "$BASE_URL/categories", name = "Categories"},
-    {url = "$BASE_URL/tags", name = "Tags"},
-    {url = "$BASE_URL/about", name = "About"},
+theme_switcher = true
+separator = "/"
+favicon = "/favicon.ico"
+favicon_emoji = "🦀"
+menu = [
+    {url = "/", name = "Home"},
+    {url = "/archive", name = "Archive"},
+    {url = "/tags", name = "Tags"},
+    {url = "/about", name = "About"},
+]
+
+socials = [
+    { name = "GitHub", url = "https://github.com/tennix", icon = "github" },
+    { name = "Twitter", url = "https://twitter.com/ztennix", icon = "twitter" },
+    { name = "LinkedIn", url = "https://www.linkedin.com/in/shuan-deng-6b5a6698/", icon = "linkedin" },
 ]

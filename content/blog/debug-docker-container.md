@@ -4,7 +4,6 @@ description = ""
 date = 2019-12-22
 
 [taxonomies]
-categories = ["container"]
 tags = ["Docker", "diagnosis"]
 +++
 

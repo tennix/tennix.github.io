@@ -25,13 +25,13 @@ virtualisation.docker.enable = true;
 
 2. 创建 amd64 builder
 
-```shell
+```sh
 docker buildx create --platform=amd64 --name my-amd64-builder --bootstrap
 ```
 
 3. 构建 x86-64 镜像
 
-```shell
+```sh
 docker buildx build --platform=linux/amd64 --builder my-amd64-builder --push -t my-image .
 ```
 
