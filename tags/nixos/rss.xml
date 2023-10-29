@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>λ =&gt; 函舍空间 - nixos</title>
+      <link>https://blog.funcer.xyz</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.funcer.xyz/tags/nixos/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 11 Jun 2023 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>ARM Linux 上构建 x86-64 Docker 镜像</title>
+          <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/build-x86-64-docker-on-arm/</link>
+          <guid>https://blog.funcer.xyz/blog/build-x86-64-docker-on-arm/</guid>
+          <description>&lt;p&gt;近期申请了一台 Mack Book Pro M1 工作机，为了方便以后换机器配置环境的麻烦，装了个 &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;nixos.org&#x2F;&quot;&gt;nixo&lt;&#x2F;a&gt; 虚拟机。期间遇到一些小问题，但整体还是很满意的。写个文档记录一下如何在 arm64 nixos 上构建 x86-64 的 Docker 镜像。&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>λ =&gt; 函舍空间 - Docker</title>
+      <link>https://blog.funcer.xyz</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.funcer.xyz/tags/docker/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 11 Jun 2023 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>ARM Linux 上构建 x86-64 Docker 镜像</title>
+          <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/build-x86-64-docker-on-arm/</link>
+          <guid>https://blog.funcer.xyz/blog/build-x86-64-docker-on-arm/</guid>
+          <description>&lt;p&gt;近期申请了一台 Mack Book Pro M1 工作机，为了方便以后换机器配置环境的麻烦，装了个 &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;nixos.org&#x2F;&quot;&gt;nixo&lt;&#x2F;a&gt; 虚拟机。期间遇到一些小问题，但整体还是很满意的。写个文档记录一下如何在 arm64 nixos 上构建 x86-64 的 Docker 镜像。&lt;&#x2F;p&gt;
+</description>
+      </item>
+      <item>
+          <title>如何调试 Docker 容器</title>
+          <pubDate>Sun, 22 Dec 2019 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/debug-docker-container/</link>
+          <guid>https://blog.funcer.xyz/blog/debug-docker-container/</guid>
+          <description>&lt;p&gt;&lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;www.docker.com&#x2F;&quot;&gt;Docker&lt;&#x2F;a&gt; 容器作为虚拟化技术的一种，其轻量级的优点同时也带来了一些缺点：不彻底的隔离性给安全带来了隐患，裁减镜像增加了运维调试难度。本文以 &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pingcap&#x2F;tidb-docker-compose&quot;&gt;tidb-docker-compose&lt;&#x2F;a&gt; 为例，谈谈在 Docker 容器出现问题时，如何进行调试排查。&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>
