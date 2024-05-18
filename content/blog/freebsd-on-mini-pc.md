@@ -32,7 +32,7 @@ After finished the installation, I couldn't boot into FreeBSD. There was no opti
 ### Mount ZFS zroot pool in LiveCD
 The fixing steps need to run on a LiveCD, so I booted again using the USB memstick. When prompted for installation, I chosed the LiveCD option. After logging into the LiveCD environment, I found the LiveCD system was readonly except for `/tmp` directory. So I followed this [thread](https://forums.FreeBSD.org/threads/how-to-mount-a-zfs-partition.61112/post-351941) to mount my ZFS zpool under `/tmp` directory.
 
-```shell
+```sh
 zpool import
 mkdir -p /tmp/zroot
 zpool import -fR /tmp/zroot zroot
@@ -43,7 +43,7 @@ mount -t zfs zroot/ROOT/default /tmp/root
 ### Setup WIFI connection
 To install `rEFInd`, I need to connect to the internet to download the `rEFInd` zip file. As most part of the LiveCD system is readonly, I couldn't configure the WIFI connection according to the handbook [Network chapter](https://docs.freebsd.org/en/books/handbook/network/). And there was no wireless network interface in the LiveCD system. So I chrooted into the mounted zfs root directory and configured the WIFI network.
 
-```shell
+```sh
 chroot /tmp/root
 vi /etc/rc.conf
 vi /etc/wpa_supplicant.conf
@@ -55,14 +55,14 @@ With the above steps, the `wlan0` interface showed up. But it couldn't connect t
 
 Then I tried to run `wpa_supplicant` manually `wpa_supplicant -Dbsd -iwlan0 -c /etc/wpa_supplicant.conf` as its help message suggested. The log showed some devices are missing. Then I realized that it may due to some devices were not properly handled in the chroot environment. So I exited the chroot environment and ran the `wpa_supplicant` directly from the LiveCD environment by `wpa_supplicant -Dbsd -iwlan0 -c /tmp/root/etc/wpa_supplicant.conf`. It succeeded!
 
-```shell
+```sh
 wpa_supplicant -Dbsd -iwlan0 -c/etc/wpa_supplicant.conf
 dhclient wlan0
 ```
 
 With WIFI connected, I could follow the steps in the above gist to install `rEFInd`.
 
-```shell
+```sh
 # Mount EFI partition
 mount -t msdosfs /dev/nda0p1 /mnt # The EFI partition on my system is nda0p1 because there is /mnt/EFI/Microsoft directory
 # Install FreeBSD boot entry
@@ -101,7 +101,7 @@ As documented in the [handbook](https://docs.freebsd.org/en/books/handbook/cutti
 
 By compiling the source code, I also measured the system performance. Last time I `make buildworld` in a VM, it cost me more than 7 hours. Now since `sysctl hw.ncpu` shows there are 16 CPUs on SER5 Max, I built the world and kernel with `-j16`. The `make -j16 buildworld` took 2858s (47.6min) which is fast enough. And during the compilation, the fan was a bit noisy but the whole machine was just the same as room temperature so the CPU must run at full speed during the compilation. However under normal usage, the fan is pretty quiet.
 
-```shell
+```sh
 pkg install git
 git clone https://git.FreeBSD.org/src.git /usr/src
 git checkout stable/14
@@ -122,7 +122,7 @@ uname -r
 ## Install X and Window Manager
 I don't just want the FreeBSD as an SSH box, and I may install a Linux VM for cloud and Docker related development. So I installed xorg and i3 window manager. The FreeBSD handbook is very informative, besides I've played FreeBSD before. So the installation is pretty smoooth.
 
-```shell
+```sh
 pkg install xorg i3 lightdm-gtk-greeter rofi firefox
 pkg install drm-kmod
 sysrc kld_list+=amdgpu
