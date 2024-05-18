@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZN1HT5CXL9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZN1HT5CXL9');
+    </script>
+
+    
+    <title>λ => 函舍空间 / Nushell：现代编程语言与 Shell 的完美融合</title>
+
+    
+    
+        <link rel="icon" type="image/png" href=&#x2F;favicon.ico />
+    
+    
+        <link rel=icon href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg" viewBox="0 0 105 55"><text y=".7em" font-size="90">🦀</text></svg>'>
+    
+
+    
+    <link rel="alternate" type="application/atom+xml" title="λ =&gt; 函舍空间" href="https://blog.funcer.xyz/atom.xml">
+
+    
+    
+    
+        <link rel="stylesheet" href=https://blog.funcer.xyz/custom_subset.css>
+    
+
+    <link rel="stylesheet" type="text/css" media="screen" href=https://blog.funcer.xyz/main.css />
+
+    
+
+    <meta name="description" content="">
+    
+        <meta name="robots" content="index, nofollow">
+    
+
+    <meta property="og:title" content="λ =&gt; 函舍空间">
+    <meta property="og:type" content="article" />
+
+    
+
+    
+    <meta property="og:url" content="https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;blog&#x2F;nushell-intro&#x2F;">
+
+    <meta property="og:description" content="">
+    <meta property="og:site_name" content="λ =&gt; 函舍空间">
+
+    <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';font-src &#x27;self&#x27; data:;img-src &#x27;self&#x27; https:&#x2F;&#x2F;* data:;script-src &#x27;self&#x27; utteranc.es https:&#x2F;&#x2F;www.googletagmanager.com https:&#x2F;&#x2F;www.google-analytics.com;connect-src &#x27;self&#x27; https:&#x2F;&#x2F;www.google-analytics.com;style-src &#x27;self&#x27;;frame-src player.vimeo.com https:&#x2F;&#x2F;www.youtube-nocookie.com utteranc.es"><script type="text/javascript" src="https://blog.funcer.xyz/js/initialize_theme_min.js"></script>
+        <script defer src="https://blog.funcer.xyz/js/main_min.js"/></script></head>
+
+
+<body>
+    <header>
+    <nav class="navbar">
+        <div class="nav-title">
+            <a class="home-title" href=https://blog.funcer.xyz>λ =&gt; 函舍空间</a>
+        </div>
+            <div class="nav-navs">
+                <ul>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz/>Home</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;archive/>Archive</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;tags/>Tags</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;about/>About</a>
+                            </li>
+                        
+                    
+
+                    <li class="theme-switcher-wrapper">
+                            <div class="theme-switcher"></div>
+                        </li></ul>
+            </div>
+        
+    </nav>
+</header>
+
+    <div class="content">
+
+        
+        
+
+    
+
+
+
+<main>
+    <article>
+        <div class="article-title">
+            Nushell：现代编程语言与 Shell 的完美融合
+        </div>
+
+        <ul class="meta">
+            
+
+            
+                <li>
+
+
+    
+
+
+
+    
+
+    
+        
+        
+            
+        
+    
+
+    
+    29th 
+    
+        Oct 2023
+    
+
+
+ &#x2F;</li>
+            
+
+            <li title="1854 words ">&nbsp;10 min read </li>
+
+            
+                <li>&nbsp;&#x2F;&nbsp;Tags:&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/shell/>shell</a></li>
+                
+            
+
+            
+        </ul>
+
+        
+
+        
+        
+
+        <section class="body">
+            <p>将默认 Shell 从 zsh 切换到 <a rel="noopener" target="_blank" href="https://www.nushell.sh">Nushell</a> 一个多月了，用下来非常顺手，一句话形容 Nushell 就是：将现代编程语言与 Shell 融合得浑然天成。</p>
+<span id="continue-reading"></span><h2 id="设计">设计<a class="zola-anchor" href="#设计" aria-label="Anchor link for: 设计">🔗</a></h2>
+<p>First Glance</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">kubectl</span></span><span class="z-meta z-function-call z-arguments z-shell"> get no</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">detect</span></span><span class="z-meta z-function-call z-arguments z-shell"> columns</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">where</span></span><span class="z-meta z-function-call z-arguments z-shell"> AGE <span class="z-keyword z-operator z-assignment z-redirection z-shell">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-file-descriptor z-shell">5</span>m and NAME starts-with web</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">select</span></span><span class="z-meta z-function-call z-arguments z-shell"> NAME STATUS</span>
+</span></code></pre>
+<p>（PS：博客没有对 nushell 语法高亮支持，在 nushell 里面有原生的语法高亮支持，可以直接试试）</p>
+<h3 id="结构化">结构化<a class="zola-anchor" href="#结构化" aria-label="Anchor link for: 结构化">🔗</a></h3>
+<p>Nushell 里面命令的输出是结构化的，有丰富的类型，不再是纯文本。一旦附加上了类型信息，就提供了无限的想象力，比如轻松访问结构化数据里面的字段，基于类型里面的字段做过滤。</p>
+<p>打开文件，识别文件格式，输出结构化数据，通过 <code>get</code> 选择器获取字段值。</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">open</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">HOME</span></span>/.kube/config</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">from</span></span><span class="z-meta z-function-call z-arguments z-shell"> yaml</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">get</span></span><span class="z-meta z-function-call z-arguments z-shell"> clusters.0.cluster.server</span>
+</span></code></pre>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sys</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">get</span></span><span class="z-meta z-function-call z-arguments z-shell"> host.kernel_version  <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> sys 是 nushell built-in 命令</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span></code></pre>
+<p>当然这些是 nushell 自带的命令行工具，其输出是结构化数据，那对于非自带的命令呢？一方面是越来越多现代化命令行工具支持结构化输出，比如 kubectl, ripgrep；另一方面传统的 unix 命令行工具输出的可能是格式化的文本，借助 nushell 自带的各种类型转换命令/函数（比如 <code>detect columns</code> 和 <code>from</code>），可以轻松将普通文本字符串转换成结构化数据。</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">^ps</span></span><span class="z-meta z-function-call z-arguments z-shell"> aux</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">detect</span></span><span class="z-meta z-function-call z-arguments z-shell"> columns</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">get</span></span><span class="z-meta z-function-call z-arguments z-shell"> 10.COMMAND  <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> 这里 ps 前加上 ^ 是指使用操作系统自带的 ps 命令而不是 nushell built-in ps 命令，10 表示取输出数组的第 10 个</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span></code></pre>
+<h3 id="贯彻_unix_精神_pipeline">贯彻 unix 精神 pipeline<a class="zola-anchor" href="#贯彻_unix_精神_pipeline" aria-label="Anchor link for: 贯彻_unix_精神_pipeline">🔗</a></h3>
+<p>unix 诞生之初就有了 pipeline 的设计，用小的命令集组合起来，发挥出强大的能力，甚至是命令行工具的开发者都没想到的用法。但是现在越来越多的命令变得非常复杂，命令行参数有好几屏，有很多已经违背 unix 最初的 pipeline 精神，比如很多命令自己干了格式化的活，通过复杂的命令行参数支持 N 多种输出格式。</p>
+<p>与这些命令行工具相比，nushell 才是真正的 unix pipeline 精神的贯彻者，让应用程序输出结构化的数据，然后交给 shell 中擅长干类型转换的命令或函数通过 pipeline 组合完成这些功能。而这也是函数式编程语言里面的 pipeline 语义，数据流经 pipeline 过程中被各种函数整形处理。所以 nushell 里面提供了非常多的类型转换处理命令/函数（这里将命令和函数写在一起，后文会看到两者在 nushell 是没有本质的区别）。</p>
+<p>函数式语言粉丝看到下面的写法狂喜：</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ls</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">each</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>|it| rm <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">it</span></span>.name <span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span></span>
+
+<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-let z-bash">let</span> scores <span class="z-keyword z-operator z-assignment z-shell">=</span> [<span class="z-constant z-numeric z-integer z-decimal z-shell">3</span> <span class="z-constant z-numeric z-integer z-decimal z-shell">8</span> <span class="z-constant z-numeric z-integer z-decimal z-shell">4</span>]</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell"><span class="z-string z-quoted z-double z-locale z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">$&quot;</span>total = (<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">scores</span></span> | reduce { |it, acc| <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">acc</span></span> + <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">it</span></span> })<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> total = 15</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-let z-bash">let</span> names <span class="z-keyword z-operator z-assignment z-shell">=</span> [Mark Tami Amanda Jeremy]</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell"><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">names</span></span></span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">each</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span> |it| <span class="z-string z-quoted z-double z-locale z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">$&quot;</span>Hello, (<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">it</span></span>)!<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span> <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Outputs &quot;Hello, Mark!&quot; and three more similar lines.</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell"><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">names</span></span></span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">enumerate</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">each</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span> |it| <span class="z-string z-quoted z-double z-locale z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">$&quot;</span>(<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">it</span></span>.index + 1) - (<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">it</span></span>.item)<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span> <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Outputs &quot;1 - Mark&quot;, &quot;2 - Tami&quot;, etc.</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">1..</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">take</span></span><span class="z-meta z-function-call z-arguments z-shell"> 20 <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> 从无限数字里面取出前 20 个</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span></code></pre>
+<h3 id="强大的类_SQL_的_query_语法">强大的类 SQL 的 query 语法<a class="zola-anchor" href="#强大的类_SQL_的_query_语法" aria-label="Anchor link for: 强大的类_SQL_的_query_语法">🔗</a></h3>
+<p><code>where</code> 过滤器有着跟 SQL 语法一样强大的表达能力，配合 <code>select</code> 选择器几乎有了一个无处不在的 SQL 系统，区别在于 nushell 中的 <code>select</code> 和 <code>where</code> 是使用经典的 unix pipeline 形式表达出来的。直接看几个示例感受一下这套强大的组合拳吧</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ls</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>la</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">where</span></span><span class="z-meta z-function-call z-arguments z-shell"> created <span class="z-keyword z-operator z-assignment z-redirection z-shell">&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-file-descriptor z-shell">2023</span>-10-24 and modified <span class="z-keyword z-operator z-assignment z-redirection z-shell">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-file-descriptor z-shell">2023</span>-10-30 and type == file</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">select</span></span><span class="z-meta z-function-call z-arguments z-shell"> name mode</span>
+</span></code></pre>
+<h3 id="现代化语言">现代化语言<a class="zola-anchor" href="#现代化语言" aria-label="Anchor link for: 现代化语言">🔗</a></h3>
+<p>内置现代编程言语，去掉奇怪的 shell 语法</p>
+<p>传统 shell 里面有一堆奇怪的设计：</p>
+<ul>
+<li>大于和小于号不是判断</li>
+<li>变量赋值等号两边不能有空格</li>
+<li>左中括号是个命令</li>
+</ul>
+<p>上面这套奇怪的语法我经常忘记，以至于每次写条件判断语句时都要 Google 一番，比如判断文件是否存在，判断字符串相等（前缀后缀匹配），比较数值大小这些怎么写，用大于小于等于号判断还是用命令参数写法，要用双中括号还是单中括号。</p>
+<p>nushell 既是 shell 又是编程语言，两者融合的浑然天成，命令跟函数是等价的，函数写法充分考虑了命令行的场景，函数参数默认值，可选参数这些方便脚本编写的语法自然也被 nushell 囊括在内了。</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> This is command documentation</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">def</span></span><span class="z-meta z-function-call z-arguments z-shell"> greet [</span>
+  <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">name:</span></span><span class="z-meta z-function-call z-arguments z-shell"> string <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> The name of the person</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span>  <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">--age</span></span><span class="z-meta z-function-call z-arguments z-shell"> (-a</span><span class="z-meta z-function-call z-shell"></span>)<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-colon z-shell">:</span></span><span class="z-meta z-function-call z-arguments z-shell"> int <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> The age of the person</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span>  <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">--two-times</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">]</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>
+  if <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">two_times</span></span> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>
+    <span class="z-keyword z-control z-regexp z-set z-begin z-shell">[</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">name</span></span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">name</span></span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">age</span></span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">age</span></span><span class="z-keyword z-control z-regexp z-set z-end z-shell">]</span>
+  <span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span> else <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>
+    <span class="z-keyword z-control z-regexp z-set z-begin z-shell">[</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">name</span></span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">age</span></span><span class="z-keyword z-control z-regexp z-set z-end z-shell">]</span>
+  <span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span>
+<span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span></span>
+</span></code></pre>
+<p>另外还有一个设计非常赞的地方，就是函数名可以带空格和连字符，这样就可以很方便地创建支持子命令的命令行工具脚本了。</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">def</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>str mycommand<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-keyword z-control z-regexp z-set z-begin z-shell">[</span><span class="z-keyword z-control z-regexp z-set z-end z-shell">]</span> <span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>
+  <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>hello<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span>
+<span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span></span>
+</span></code></pre>
+<p>现代编程语言里面的常用符号在 nushell 里面有着很自然的语义，所以直接有一个内置的计算器，再也不用 <code>bc</code> 这样奇怪的计算器了，也不用专门进入 python 的 repl 里面去做简单的数值计算了。</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">3</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span> 2 + 4 <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span> 2</span>
+<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-let z-bash">let</span> pi <span class="z-keyword z-operator z-assignment z-shell">=</span> <span class="z-constant z-numeric z-integer z-decimal z-shell">3</span>.<span class="z-constant z-numeric z-integer z-decimal z-shell">14</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-support z-function z-let z-bash">let</span> r <span class="z-keyword z-operator z-assignment z-shell">=</span> <span class="z-constant z-numeric z-integer z-decimal z-shell">4</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell"><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">pi</span></span></span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">r</span></span> <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span> 2</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">[9</span></span><span class="z-meta z-function-call z-arguments z-shell"> 16 2]</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">math</span></span><span class="z-meta z-function-call z-arguments z-shell"> sqrt    <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> 同样可以用管道，甚至是对一个数组进行处理</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span></code></pre>
+<h2 id="补全">补全<a class="zola-anchor" href="#补全" aria-label="Anchor link for: 补全">🔗</a></h2>
+<p>nushell 提供可扩展的补全接口，默认配置文件里面有注释掉的 <a rel="noopener" target="_blank" href="https://github.com/rsteube/carapace-bin">carapace</a> 补全，安装上 carapace-bin 之后，取消注释并将其加到 <code>completions.external.completer</code> 里面，然后就有非常不错的补全体验了。carapace 支持非常多命令行工具的补全，<a rel="noopener" target="_blank" href="https://rsteube.github.io/carapace-bin/completers.html">这里</a>有详细支持的补全工具列表，基本上能 cover 到日常所有的使用场景。</p>
+<p>配置好 carapace 补全后，输入 <code>git TAB</code> 或者 <code>git -TAB</code> 或者 <code>git --TAB</code> 就会体验到贴心的补全提示，用上之后再也回不去没有补全的日子了。</p>
+<h2 id="实用内置命令">实用内置命令<a class="zola-anchor" href="#实用内置命令" aria-label="Anchor link for: 实用内置命令">🔗</a></h2>
+<ul>
+<li>
+<p><code>describe</code>：在不知道类型的时候，可以通过 describe 命令查看，比如 <code>ls | describe</code></p>
+</li>
+<li>
+<p><code>from</code>, <code>to</code>：丰富的格式转换，有这两个命令之后，那些 <code>yaml2json</code> 之类的工具可以退役了</p>
+</li>
+<li>
+<p><code>random</code>：可以任意生成指定类型的随机值</p>
+</li>
+<li>
+<p><code>http</code>：相当于内置了一个用 Rust 实现的 <code>httpie</code></p>
+</li>
+<li>
+<p><code>math</code>：提供高级的数学函数计算，有这个可以不需要额外的计算器了</p>
+</li>
+</ul>
+<h2 id="缺点">缺点<a class="zola-anchor" href="#缺点" aria-label="Anchor link for: 缺点">🔗</a></h2>
+<p>Nushell 不是一个 POSIX 兼容的 shell，不过现在即使不用 nushell 要想编写一段完全 POSIX 兼容的脚本，实际是非常有挑战的，主要挑战来自各种不同的 shell 自己的扩展语法以及 POSIX 自身的奇怪语法，而且事实上 bash 已经成为了 Linux 上默认 shell 好多年了，大部分脚本也只考虑了 bash 语法。而 Nushell 支持几种主流操作系统，所以写的脚本也具有一定的通用性，关键是用 nushell 来写命令行脚本太舒服了，所以不兼容 POSIX 标准也不算特别大的问题，也许未来十年之后 nushell 成为很多系统默认的 shell，那新生代程序员，系统管理员就幸福了（手动狗头。</p>
+<p>当然不兼容 bash 带来的结果是从 bash, zsh 转过来的需要一段时间去适应，跟 bash/zsh 的一些差异可以看官方文档<a rel="noopener" target="_blank" href="https://www.nushell.sh/book/coming_from_bash.html">这里</a></p>
+
+        </section>
+
+    </article>
+</main>
+
+
+    <!-- Utterances uses GitHub issue for comment -->
+    <div class="comments">
+      <script async src="https://utteranc.es/client.js"
+              repo="tennix/tennix.github.io"
+              issue-term="pathname"
+              label="comment"
+              theme="preferred-color-scheme"
+              crossorigin="anonymous">
+      </script>
+    </div>
+
+
+    </div>
+    <footer>
+    <section>
+        <nav class="socials nav-navs">
+                <ul>
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;github.com&#x2F;tennix>
+                                <img alt=GitHub title=GitHub src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/github.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;twitter.com&#x2F;ztennix>
+                                <img alt=Twitter title=Twitter src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/twitter.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;shuan-deng-6b5a6698&#x2F;>
+                                <img alt=LinkedIn title=LinkedIn src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/linkedin.svg">
+                            </a>
+                        </li>
+                    
+                </ul>
+            
+        </nav>
+        <div class="credits">
+            <small> Powered by  <a href="https://www.getzola.org" target="_blank">Zola</a> &  <a href="https://github.com/welpo/tabi" target="_blank">tabi</a></small>
+        </div>
+    </section>
+</footer>
+
+
+    
+</body>
+
+</html>

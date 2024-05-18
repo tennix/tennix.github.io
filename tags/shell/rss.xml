@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>λ =&gt; 函舍空间 - shell</title>
+      <link>https://blog.funcer.xyz</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.funcer.xyz/tags/shell/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 29 Oct 2023 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Nushell：现代编程语言与 Shell 的完美融合</title>
+          <pubDate>Sun, 29 Oct 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/nushell-intro/</link>
+          <guid>https://blog.funcer.xyz/blog/nushell-intro/</guid>
+          <description>&lt;p&gt;将默认 Shell 从 zsh 切换到 &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;www.nushell.sh&quot;&gt;Nushell&lt;&#x2F;a&gt; 一个多月了，用下来非常顺手，一句话形容 Nushell 就是：将现代编程语言与 Shell 融合得浑然天成。&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>

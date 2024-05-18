@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>λ =&gt; 函舍空间 - freebsd</title>
+      <link>https://blog.funcer.xyz</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.funcer.xyz/tags/freebsd/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sat, 18 May 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Install FreeBSD on a Mini PC</title>
+          <pubDate>Sat, 18 May 2024 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/freebsd-on-mini-pc/</link>
+          <guid>https://blog.funcer.xyz/blog/freebsd-on-mini-pc/</guid>
+          <description>&lt;p&gt;I&#x27;m a big fan of &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;www.freebsd.org&quot;&gt;FreeBSD&lt;&#x2F;a&gt;. But previously I only played with it occasionally in VMs and haven&#x27;t deep dived into it. Recently I decided to run FreeBSD on a real machine. This post describes how I install and configure FreeBSD on a Mini PC (SER5 Max).&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZN1HT5CXL9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZN1HT5CXL9');
+    </script>
+
+    
+    <title>λ => 函舍空间 / ARM Linux 上构建 x86-64 Docker 镜像</title>
+
+    
+    
+        <link rel="icon" type="image/png" href=&#x2F;favicon.ico />
+    
+    
+        <link rel=icon href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg" viewBox="0 0 105 55"><text y=".7em" font-size="90">🦀</text></svg>'>
+    
+
+    
+    <link rel="alternate" type="application/atom+xml" title="λ =&gt; 函舍空间" href="https://blog.funcer.xyz/atom.xml">
+
+    
+    
+    
+        <link rel="stylesheet" href=https://blog.funcer.xyz/custom_subset.css>
+    
+
+    <link rel="stylesheet" type="text/css" media="screen" href=https://blog.funcer.xyz/main.css />
+
+    
+
+    <meta name="description" content="">
+    
+        <meta name="robots" content="index, nofollow">
+    
+
+    <meta property="og:title" content="λ =&gt; 函舍空间">
+    <meta property="og:type" content="article" />
+
+    
+
+    
+    <meta property="og:url" content="https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;blog&#x2F;build-x86-64-docker-on-arm&#x2F;">
+
+    <meta property="og:description" content="">
+    <meta property="og:site_name" content="λ =&gt; 函舍空间">
+
+    <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';font-src &#x27;self&#x27; data:;img-src &#x27;self&#x27; https:&#x2F;&#x2F;* data:;script-src &#x27;self&#x27; utteranc.es https:&#x2F;&#x2F;www.googletagmanager.com https:&#x2F;&#x2F;www.google-analytics.com;connect-src &#x27;self&#x27; https:&#x2F;&#x2F;www.google-analytics.com;style-src &#x27;self&#x27;;frame-src player.vimeo.com https:&#x2F;&#x2F;www.youtube-nocookie.com utteranc.es"><script type="text/javascript" src="https://blog.funcer.xyz/js/initialize_theme_min.js"></script>
+        <script defer src="https://blog.funcer.xyz/js/main_min.js"/></script></head>
+
+
+<body>
+    <header>
+    <nav class="navbar">
+        <div class="nav-title">
+            <a class="home-title" href=https://blog.funcer.xyz>λ =&gt; 函舍空间</a>
+        </div>
+            <div class="nav-navs">
+                <ul>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz/>Home</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;archive/>Archive</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;tags/>Tags</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;about/>About</a>
+                            </li>
+                        
+                    
+
+                    <li class="theme-switcher-wrapper">
+                            <div class="theme-switcher"></div>
+                        </li></ul>
+            </div>
+        
+    </nav>
+</header>
+
+    <div class="content">
+
+        
+        
+
+    
+
+
+
+<main>
+    <article>
+        <div class="article-title">
+            ARM Linux 上构建 x86-64 Docker 镜像
+        </div>
+
+        <ul class="meta">
+            
+
+            
+                <li>
+
+
+    
+
+
+
+    
+
+    
+        
+    
+
+    
+    11th 
+    
+        Jun 2023
+    
+
+
+ &#x2F;</li>
+            
+
+            <li title="333 words ">&nbsp;2 min read </li>
+
+            
+                <li>&nbsp;&#x2F;&nbsp;Tags:&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/docker/>docker</a>,&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/nixos/>nixos</a></li>
+                
+            
+
+            
+        </ul>
+
+        
+
+        
+        
+
+        <section class="body">
+            <p>近期申请了一台 Mack Book Pro M1 工作机，为了方便以后换机器配置环境的麻烦，装了个 <a rel="noopener" target="_blank" href="https://nixos.org/">nixo</a> 虚拟机。期间遇到一些小问题，但整体还是很满意的。写个文档记录一下如何在 arm64 nixos 上构建 x86-64 的 Docker 镜像。</p>
+<span id="continue-reading"></span><h2 id="TL;DR">TL;DR<a class="zola-anchor" href="#TL;DR" aria-label="Anchor link for: TL;DR">🔗</a></h2>
+<ol>
+<li>在 /etc/nixos/configuration.nix 配置里面加上下面的配置</li>
+</ol>
+<pre data-lang="nix" class="language-nix z-code"><code class="language-nix" data-lang="nix"><span class="z-source z-nix"><span class="z-variable z-parameter z-name z-nix">boot</span><span class="z-keyword z-operator z-nix">.</span><span class="z-variable z-parameter z-name z-nix">binfmt</span><span class="z-keyword z-operator z-nix">.</span><span class="z-variable z-parameter z-name z-nix">emulatedSystems</span> <span class="z-invalid z-illegal">=</span> <span class="z-punctuation z-definition z-list z-nix">[</span> <span class="z-string z-quoted z-double z-nix"><span class="z-punctuation z-definition z-string z-double z-start z-nix">&quot;</span>x86_64-linux<span class="z-punctuation z-definition z-string z-double z-end z-nix">&quot;</span></span> <span class="z-punctuation z-definition z-list z-nix">]</span><span class="z-invalid z-illegal">;</span>
+
+<span class="z-variable z-parameter z-name z-nix">environment</span><span class="z-keyword z-operator z-nix">.</span><span class="z-variable z-parameter z-name z-nix">SystemPackages</span> <span class="z-invalid z-illegal">=</span> <span class="z-invalid z-illegal z-reserved z-nix">with</span> <span class="z-variable z-parameter z-name z-nix">pkgs</span><span class="z-invalid z-illegal">;</span> <span class="z-punctuation z-definition z-list z-nix">[</span> <span class="z-variable z-parameter z-name z-nix">docker</span> <span class="z-variable z-parameter z-name z-nix">docker-buildx</span> <span class="z-punctuation z-definition z-list z-nix">]</span><span class="z-invalid z-illegal">;</span>
+
+<span class="z-variable z-parameter z-name z-nix">virtualisation</span><span class="z-keyword z-operator z-nix">.</span><span class="z-variable z-parameter z-name z-nix">docker</span><span class="z-keyword z-operator z-nix">.</span><span class="z-variable z-parameter z-name z-nix">enable</span> <span class="z-invalid z-illegal">=</span> <span class="z-constant z-language z-nix">true</span><span class="z-invalid z-illegal">;</span>
+</span></code></pre>
+<ol start="2">
+<li>创建 amd64 builder</li>
+</ol>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">docker</span></span><span class="z-meta z-function-call z-arguments z-shell"> buildx create<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>platform</span><span class="z-keyword z-operator z-assignment z-option z-shell">=</span>amd64<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>name</span> my-amd64-builder<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>bootstrap</span></span>
+</span></code></pre>
+<ol start="3">
+<li>构建 x86-64 镜像</li>
+</ol>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">docker</span></span><span class="z-meta z-function-call z-arguments z-shell"> buildx build<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>platform</span><span class="z-keyword z-operator z-assignment z-option z-shell">=</span>linux/amd64<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>builder</span> my-amd64-builder<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>push</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> my-image .</span>
+</span></code></pre>
+<h2 id="Detailed">Detailed<a class="zola-anchor" href="#Detailed" aria-label="Anchor link for: Detailed">🔗</a></h2>
+<p>Docker 的跨平台构建是通过 BuildKit 扩展实现的，而跨平台则依赖 QEMU 模拟器。nixos 里面启用 QEMU 模拟，只需要在 /etc/nixos/configuration.nix 里面加上 <code>boot.binfmt.emulatedSystems = [ &quot;x86_64-linux&quot; ];</code>。docker-buildx 是 BuildKit 的跨平台扩展，nixos 下面声明式安装 docker-buildx：<code>environment.SystemPackages = with pkgs; [ docker docker-buildx ];</code>。如果之前没安装配置过 Docker，则还需要启用 docker 服务：<code>virtualisation.docker.enable = true;</code>，配置完 /etc/nixos/configuration.nix 后，运行 <code>sudo nixos-rebuild switch</code> 就安装并启用了 docker 服务。</p>
+<p>docker buildx 默认有一个当前架构的 builder，可以通过 <code>docker buildx ls</code> 列出所有 builder。<code>docker buildx create --platform=amd64 --name my-amd64-builder --bootstrap</code> 用于创建一个新的 builder，不再使用的 builder 可以通过 <code>docker buildx rm my-amd64-builder</code> 方式删掉。</p>
+
+        </section>
+
+    </article>
+</main>
+
+
+    <!-- Utterances uses GitHub issue for comment -->
+    <div class="comments">
+      <script async src="https://utteranc.es/client.js"
+              repo="tennix/tennix.github.io"
+              issue-term="pathname"
+              label="comment"
+              theme="preferred-color-scheme"
+              crossorigin="anonymous">
+      </script>
+    </div>
+
+
+    </div>
+    <footer>
+    <section>
+        <nav class="socials nav-navs">
+                <ul>
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;github.com&#x2F;tennix>
+                                <img alt=GitHub title=GitHub src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/github.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;twitter.com&#x2F;ztennix>
+                                <img alt=Twitter title=Twitter src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/twitter.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;shuan-deng-6b5a6698&#x2F;>
+                                <img alt=LinkedIn title=LinkedIn src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/linkedin.svg">
+                            </a>
+                        </li>
+                    
+                </ul>
+            
+        </nav>
+        <div class="credits">
+            <small> Powered by  <a href="https://www.getzola.org" target="_blank">Zola</a> &  <a href="https://github.com/welpo/tabi" target="_blank">tabi</a></small>
+        </div>
+    </section>
+</footer>
+
+
+    
+</body>
+
+</html>
