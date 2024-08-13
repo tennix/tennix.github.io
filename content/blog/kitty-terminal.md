@@ -49,7 +49,7 @@ He shared his
 with me. But he only configured a few keys, and I used more Tmux
 keybindings. So I added some more Tmux keybindings to Kitty
 configuration. The whole configuration is
-[here](https://github.com/tennix/dotfiles/tree/main/kitty). The keybindings are copied from [Tmux
+[here](https://github.com/tennix/dotfiles/blob/main/dot_config/kitty/kitty.conf.tmpl). The keybindings are copied from [Tmux
 keybinding cheatsheet](https://tmuxcheatsheet.com/).
 
 The result is pretty exciting, it covers all my keybinding usage in
