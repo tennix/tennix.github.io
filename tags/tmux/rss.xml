@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>λ =&gt; 函舍空间 - tmux</title>
+      <link>https://blog.funcer.xyz</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.funcer.xyz/tags/tmux/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Replace Tmux and Alacritty with Kitty Terminal</title>
+          <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.funcer.xyz/blog/kitty-terminal/</link>
+          <guid>https://blog.funcer.xyz/blog/kitty-terminal/</guid>
+          <description>&lt;p&gt;I used &lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tmux&#x2F;tmux&#x2F;wiki&quot;&gt;Tmux&lt;&#x2F;a&gt; a lot in the past. On
+macOS I run Tmux in
+&lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;alacritty&#x2F;alacritty&quot;&gt;Alacritty&lt;&#x2F;a&gt;. Recently I&#x27;ve
+replaced Alacritty + Tmux with
+&lt;a rel=&quot;noopener&quot; target=&quot;_blank&quot; href=&quot;https:&#x2F;&#x2F;sw.kovidgoyal.net&#x2F;kitty&#x2F;&quot;&gt;Kitty&lt;&#x2F;a&gt;. Having used Kitty for about
+a month, I find it&#x27;s pretty awesome and can seamlessly switch to it
+with nearly the same set of keybindings as Tmux.&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>

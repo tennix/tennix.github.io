@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZN1HT5CXL9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZN1HT5CXL9');
+    </script>
+
+    
+    <title>λ => 函舍空间 / Install FreeBSD on a Mini PC</title>
+
+    
+    
+        <link rel="icon" type="image/png" href=&#x2F;favicon.ico />
+    
+    
+        <link rel=icon href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg" viewBox="0 0 105 55"><text y=".7em" font-size="90">🦀</text></svg>'>
+    
+
+    
+    <link rel="alternate" type="application/atom+xml" title="λ =&gt; 函舍空间" href="https://blog.funcer.xyz/atom.xml">
+
+    
+    
+    
+        <link rel="stylesheet" href=https://blog.funcer.xyz/custom_subset.css>
+    
+
+    <link rel="stylesheet" type="text/css" media="screen" href=https://blog.funcer.xyz/main.css />
+
+    
+
+    <meta name="description" content="">
+    
+        <meta name="robots" content="index, nofollow">
+    
+
+    <meta property="og:title" content="λ =&gt; 函舍空间">
+    <meta property="og:type" content="article" />
+
+    
+
+    
+    <meta property="og:url" content="https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;blog&#x2F;freebsd-on-mini-pc&#x2F;">
+
+    <meta property="og:description" content="">
+    <meta property="og:site_name" content="λ =&gt; 函舍空间">
+
+    <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';font-src &#x27;self&#x27; data:;img-src &#x27;self&#x27; https:&#x2F;&#x2F;* data:;script-src &#x27;self&#x27; utteranc.es https:&#x2F;&#x2F;www.googletagmanager.com https:&#x2F;&#x2F;www.google-analytics.com;connect-src &#x27;self&#x27; https:&#x2F;&#x2F;www.google-analytics.com;style-src &#x27;self&#x27;;frame-src player.vimeo.com https:&#x2F;&#x2F;www.youtube-nocookie.com utteranc.es"><script type="text/javascript" src="https://blog.funcer.xyz/js/initialize_theme_min.js"></script>
+        <script defer src="https://blog.funcer.xyz/js/main_min.js"/></script></head>
+
+
+<body>
+    <header>
+    <nav class="navbar">
+        <div class="nav-title">
+            <a class="home-title" href=https://blog.funcer.xyz>λ =&gt; 函舍空间</a>
+        </div>
+            <div class="nav-navs">
+                <ul>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz/>Home</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;archive/>Archive</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;tags/>Tags</a>
+                            </li>
+                        
+                            <li>
+                                <a class="nav-links no-hover-padding" href=https:&#x2F;&#x2F;blog.funcer.xyz&#x2F;about/>About</a>
+                            </li>
+                        
+                    
+
+                    <li class="theme-switcher-wrapper">
+                            <div class="theme-switcher"></div>
+                        </li></ul>
+            </div>
+        
+    </nav>
+</header>
+
+    <div class="content">
+
+        
+        
+
+    
+
+
+
+<main>
+    <article>
+        <div class="article-title">
+            Install FreeBSD on a Mini PC
+        </div>
+
+        <ul class="meta">
+            
+
+            
+                <li>
+
+
+    
+
+
+
+    
+
+    
+        
+        
+            
+        
+    
+
+    
+    18th 
+    
+        May 2024
+    
+
+
+ &#x2F;</li>
+            
+
+            <li title="1299 words ">&nbsp;7 min read </li>
+
+            
+                <li>&nbsp;&#x2F;&nbsp;Tags:&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/freebsd/>freebsd</a>,&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/os/>os</a>,&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/beelink/>beelink</a>,&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/minipc/>minipc</a>,&nbsp;</li>
+                
+                    <li><a href=https://blog.funcer.xyz/tags/ling-ke/>零刻</a></li>
+                
+            
+
+            
+        </ul>
+
+        
+
+        
+        
+
+        <section class="body">
+            <p>I'm a big fan of <a rel="noopener" target="_blank" href="https://www.freebsd.org">FreeBSD</a>. But previously I only played with it occasionally in VMs and haven't deep dived into it. Recently I decided to run FreeBSD on a real machine. This post describes how I install and configure FreeBSD on a Mini PC (SER5 Max).</p>
+<span id="continue-reading"></span>
+<p>I already have two MBP laptops and I don't want to have another laptop. But I don't have enough space to place a traditional desktop computer on my desk, so I plan to buy a mini PC. Beelink seems a good choice according to this <a rel="noopener" target="_blank" href="https://forums.freebsd.org/threads/finding-a-minipc-with-good-freebsd-support-for-its-graphics-processor.91734/">thread</a>. Beelink SER5 Max has AMD 5800H CPU. It's powerful than many laptops CPU and should compile source code very fast.</p>
+<p><img src="/images/ser5-max.jpg" alt="ser5 max" /></p>
+<p>I met some problems during the installation and fixed them all, I hope this post can help people who have similar issues:</p>
+<ul>
+<li>Partition using Root on ZFS</li>
+<li>Dual Boot with Windows</li>
+<li>WIFI connection</li>
+</ul>
+<h2 id="Installation">Installation<a class="zola-anchor" href="#Installation" aria-label="Anchor link for: Installation">🔗</a></h2>
+<p>The model I bought has 32GB memory and 1TB SSD with Windows 11 preinstalled. I wanted to keep the Windows system in case I need to run some Windows only applications. So I shrinked 500GB free partition from Windows system parition in Windows disk manager.</p>
+<p>I wanted to install Root on ZFS, but the <code>bsdinstall</code> <a rel="noopener" target="_blank" href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-part-zfs">Auto ZFS option</a> uses the entire disk. Luckily I found this <a rel="noopener" target="_blank" href="https://wiki.freebsd.org/RootOnZFS/GPTZFSBoot">wiki</a>. I followed exactally the same steps here but without swap partition.</p>
+<h2 id="Dual_boot_with_Windows">Dual boot with Windows<a class="zola-anchor" href="#Dual_boot_with_Windows" aria-label="Anchor link for: Dual_boot_with_Windows">🔗</a></h2>
+<p>After finished the installation, I couldn't boot into FreeBSD. There was no option to choose which system to boot, it directly booted to Windows. After some Googling, I've found this <a rel="noopener" target="_blank" href="https://gist.github.com/zeising/5d2402d92b4cf421c7402d663b2d9e41">gist</a> to help me dual boot Windows and FreeBSD with boot manager <code>rEFInd</code>. Though this gist was created 5 years ago, it's still valid and I followed exactally the same steps to fix the boot issue.</p>
+<h3 id="Mount_ZFS_zroot_pool_in_LiveCD">Mount ZFS zroot pool in LiveCD<a class="zola-anchor" href="#Mount_ZFS_zroot_pool_in_LiveCD" aria-label="Anchor link for: Mount_ZFS_zroot_pool_in_LiveCD">🔗</a></h3>
+<p>The fixing steps need to run on a LiveCD, so I booted again using the USB memstick. When prompted for installation, I chosed the LiveCD option. After logging into the LiveCD environment, I found the LiveCD system was readonly except for <code>/tmp</code> directory. So I followed this <a rel="noopener" target="_blank" href="https://forums.FreeBSD.org/threads/how-to-mount-a-zfs-partition.61112/post-351941">thread</a> to mount my ZFS zpool under <code>/tmp</code> directory.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">zpool</span></span><span class="z-meta z-function-call z-arguments z-shell"> import</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mkdir</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>p</span> /tmp/zroot</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">zpool</span></span><span class="z-meta z-function-call z-arguments z-shell"> import<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>fR</span> /tmp/zroot zroot</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mkdir</span></span><span class="z-meta z-function-call z-arguments z-shell"> /tmp/root</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mount</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> zfs zroot/ROOT/default /tmp/root</span>
+</span></code></pre>
+<h3 id="Setup_WIFI_connection">Setup WIFI connection<a class="zola-anchor" href="#Setup_WIFI_connection" aria-label="Anchor link for: Setup_WIFI_connection">🔗</a></h3>
+<p>To install <code>rEFInd</code>, I need to connect to the internet to download the <code>rEFInd</code> zip file. As most part of the LiveCD system is readonly, I couldn't configure the WIFI connection according to the handbook <a rel="noopener" target="_blank" href="https://docs.freebsd.org/en/books/handbook/network/">Network chapter</a>. And there was no wireless network interface in the LiveCD system. So I chrooted into the mounted zfs root directory and configured the WIFI network.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">chroot</span></span><span class="z-meta z-function-call z-arguments z-shell"> /tmp/root</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">vi</span></span><span class="z-meta z-function-call z-arguments z-shell"> /etc/rc.conf</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">vi</span></span><span class="z-meta z-function-call z-arguments z-shell"> /etc/wpa_supplicant.conf</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">service</span></span><span class="z-meta z-function-call z-arguments z-shell"> netif restart</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ifconfig</span></span>
+</span></code></pre>
+<p>With the above steps, the <code>wlan0</code> interface showed up. But it couldn't connect to my home WIFI. However my WIFI SSID did show up in the scanning output list by <code>ifconfig wlan0 list scan</code>. At first I doubted the <code>regdomain</code> configuration in <code>/etc/rc.conf</code>. But changing it to different values did not solve the issue and even worse I couldn't scan my WIFI SSID if configured with a wrong value. After some Googling, I decided that the <code>etsi</code> is the correct value.</p>
+<p>Then I tried to run <code>wpa_supplicant</code> manually <code>wpa_supplicant -Dbsd -iwlan0 -c /etc/wpa_supplicant.conf</code> as its help message suggested. The log showed some devices are missing. Then I realized that it may due to some devices were not properly handled in the chroot environment. So I exited the chroot environment and ran the <code>wpa_supplicant</code> directly from the LiveCD environment by <code>wpa_supplicant -Dbsd -iwlan0 -c /tmp/root/etc/wpa_supplicant.conf</code>. It succeeded!</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">wpa_supplicant</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>Dbsd</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>iwlan0</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span>/etc/wpa_supplicant.conf</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">dhclient</span></span><span class="z-meta z-function-call z-arguments z-shell"> wlan0</span>
+</span></code></pre>
+<p>With WIFI connected, I could follow the steps in the above gist to install <code>rEFInd</code>.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Mount EFI partition</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mount</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> msdosfs /dev/nda0p1 /mnt <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> The EFI partition on my system is nda0p1 because there is /mnt/EFI/Microsoft directory</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Install FreeBSD boot entry</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mkdir</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>p</span> /mnt/EFI/FreeBSD</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cp</span></span><span class="z-meta z-function-call z-arguments z-shell"> /tmp/root/boot/loader.efi /mnt/EFI/FreeBSD</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">efibootmgr</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>create</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>activate</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>label</span> FreeBSD<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>loader</span> /dev/nda0p1:/EFI/FreeBSD/loader.efi</span>
+<span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Double check FreeBSD boot entry is properly configured</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">efibootmgr</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>v <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> ensure the FreeBSD is in the output</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Install rEFInd boot entry</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">fetch</span></span><span class="z-meta z-function-call z-arguments z-shell"> http://sourceforge.net/projects/refind/files/0.14.2/refind-bin-0.14.2.zip/download<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>o</span> refind-bin-0.14.2.zip</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">unzip</span></span><span class="z-meta z-function-call z-arguments z-shell"> refind-bin-0.14.2.zip</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mkdir</span></span><span class="z-meta z-function-call z-arguments z-shell"> /mnt/EFI/rEFInd</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cp</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span> refind-bin-0.14.2/refind /mnt/EFI/rEFInd</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">efibootmgr</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>create</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>activate</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>label</span> rEFInd<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>loader</span> /dev/nda0p1:/EFI/rEFInd/refind_x64.efi</span>
+<span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Double check rEFInd boot entry is properly configured</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">efibootmgr</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>v</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cp</span></span><span class="z-meta z-function-call z-arguments z-shell"> /mnt/EFI/rEFInd/refind.conf-sample /mnt/EFI/rEFInd/refind.conf</span>
+<span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Reboot</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">zpool</span></span><span class="z-meta z-function-call z-arguments z-shell"> export</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">reboot</span></span>
+</span></code></pre>
+<p>But there was still one minor issue preventing me from booting to FreeBSD, the system still booted to Windows directly without prompting me choose which OS to boot. After navigating around the BIOS menu, I found that there was a secondary boot order priority. The primary boot order priority configuration is for which devices to boot first, and the secondary is for a specific device's boot priority.</p>
+<p><img src="/images/bios-boot-menu1.jpg" alt="primary boot priority" /></p>
+<p><img src="/images/bios-boot-menu2.jpg" alt="secondary boot priority" /></p>
+<p>After adjusting the secondary boot order priority, I could finally boot to the newly installed FreeBSD system!</p>
+<p><img src="/images/refind-dual-boot.jpg" alt="rEFInd dual boot" /></p>
+<h2 id="Tracking_stable_branch">Tracking stable branch<a class="zola-anchor" href="#Tracking_stable_branch" aria-label="Anchor link for: Tracking_stable_branch">🔗</a></h2>
+<p>As documented in the <a rel="noopener" target="_blank" href="https://docs.freebsd.org/en/books/handbook/cutting-edge/#stable">handbook</a>, it's not suggested to run <code>FreeBSD-STABLE</code> as it's a development branch. But I want to deep dive into FreeBSD and reading its source code and tracking its development. So I cloned the FreeBSD source code into <code>/usr/src</code> and checked out the latest stable branch <code>stable/14</code>. After compiling and installing the source code, my system is updated to <code>14.1-stable</code>.</p>
+<p>By compiling the source code, I also measured the system performance. Last time I <code>make buildworld</code> in a VM, it cost me more than 7 hours. Now since <code>sysctl hw.ncpu</code> shows there are 16 CPUs on SER5 Max, I built the world and kernel with <code>-j16</code>. The <code>make -j16 buildworld</code> took 2858s (47.6min) which is fast enough. And during the compilation, the fan was a bit noisy but the whole machine was just the same as room temperature so the CPU must run at full speed during the compilation. However under normal usage, the fan is pretty quiet.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pkg</span></span><span class="z-meta z-function-call z-arguments z-shell"> install git</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> clone https://git.FreeBSD.org/src.git /usr/src</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">git</span></span><span class="z-meta z-function-call z-arguments z-shell"> checkout stable/14</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">make</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>j16</span> buildworld</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">make</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>j16</span> buildkernel</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">make</span></span><span class="z-meta z-function-call z-arguments z-shell"> installkernel</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">shutdown</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span> now</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">freebsd-version</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">uname</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">make</span></span><span class="z-meta z-function-call z-arguments z-shell"> installworld</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">shutdown</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span> now</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">freebsd-version</span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">uname</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>r</span></span>
+</span></code></pre>
+<p><img src="/images/make-buildworld.jpg" alt="make buildworld" />
+<img src="/images/make-buildkernel.jpg" alt="make buildkernel" /></p>
+<h2 id="Install_X_and_Window_Manager">Install X and Window Manager<a class="zola-anchor" href="#Install_X_and_Window_Manager" aria-label="Anchor link for: Install_X_and_Window_Manager">🔗</a></h2>
+<p>I don't just want the FreeBSD as an SSH box, and I may install a Linux VM for cloud and Docker related development. So I installed xorg and i3 window manager. The FreeBSD handbook is very informative, besides I've played FreeBSD before. So the installation is pretty smoooth.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pkg</span></span><span class="z-meta z-function-call z-arguments z-shell"> install xorg i3 lightdm-gtk-greeter rofi firefox</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pkg</span></span><span class="z-meta z-function-call z-arguments z-shell"> install drm-kmod</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sysrc</span></span><span class="z-meta z-function-call z-arguments z-shell"> kld_list+=amdgpu</span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sysrc</span></span><span class="z-meta z-function-call z-arguments z-shell"> dbus_enable=<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>YES<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">sysrc</span></span><span class="z-meta z-function-call z-arguments z-shell"> lightdm_enable=<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>YES<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pw</span></span><span class="z-meta z-function-call z-arguments z-shell"> groupmod video<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>m</span> tennix</span>
+<span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Install noto font to display CJK characters correctly</span><span class="z-comment z-line z-number-sign z-shell">
+</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pkg</span></span><span class="z-meta z-function-call z-arguments z-shell"> install noto</span>
+</span></code></pre>
+<p>I've usd <code>chezmoi</code> to manage my dotfiles on macOS and Linux, so I also installed the chezmoi and applied my dotfiles by <code>chezmoi init --apply tennix</code>. For interested readers, my dotfiles is <a rel="noopener" target="_blank" href="https://github.com/tennix/dotfiles">here</a>.</p>
+
+        </section>
+
+    </article>
+</main>
+
+
+    <!-- Utterances uses GitHub issue for comment -->
+    <div class="comments">
+      <script async src="https://utteranc.es/client.js"
+              repo="tennix/tennix.github.io"
+              issue-term="pathname"
+              label="comment"
+              theme="preferred-color-scheme"
+              crossorigin="anonymous">
+      </script>
+    </div>
+
+
+    </div>
+    <footer>
+    <section>
+        <nav class="socials nav-navs">
+                <ul>
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;github.com&#x2F;tennix>
+                                <img alt=GitHub title=GitHub src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/github.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;twitter.com&#x2F;ztennix>
+                                <img alt=Twitter title=Twitter src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/twitter.svg">
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a rel="noopener noreferrer" target="_blank" class="nav-links no-hover-padding social" href=https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;shuan-deng-6b5a6698&#x2F;>
+                                <img alt=LinkedIn title=LinkedIn src="https:&#x2F;&#x2F;blog.funcer.xyz/social_icons/linkedin.svg">
+                            </a>
+                        </li>
+                    
+                </ul>
+            
+        </nav>
+        <div class="credits">
+            <small> Powered by  <a href="https://www.getzola.org" target="_blank">Zola</a> &  <a href="https://github.com/welpo/tabi" target="_blank">tabi</a></small>
+        </div>
+    </section>
+</footer>
+
+
+    
+</body>
+
+</html>
